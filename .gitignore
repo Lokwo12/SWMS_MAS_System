@@ -1,0 +1,51 @@
+/media/*.mp4
+*.mp4
+# DALI working folders & files
+
+conf/mas/
+work/*
+build/*.txt
+*.ple
+
+# Compiled Prolog files
+*.qlf
+*.pro
+*.pl
+
+# DALI runtime temporary files
+*.err
+*.log
+*.out
+*.bak
+*.tmp
+*.aux
+*.pl~
+
+# SICStus Prolog temporary files
+*.sav
+*.res
+
+# SWI Prolog history
+.history
+
+# Emacs and Vim swap files
+*~
+.*.swp
+.*.swo
+
+# VSCode project settings
+.vscode/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Build/output directories
+/build/
+bin/
+
+src/
+*.log
+*.aux
+*.out
+*.toc
