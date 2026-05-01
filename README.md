@@ -19,6 +19,15 @@ The entire pipeline runs without human intervention and is resilient to truck re
 
 ---
 
+## 1. System Objective
+
+The **Smart Waste Management System (SWMS)** is a Multi-Agent System (MAS) built on the DALI agent platform. Its objective is to automate the urban waste collection process through the coordinated cooperation of autonomous agents.
+
+## 2. Agent Roles and Virtual Organization
+
+### 2.1 Virtual Organization Overview
+
+The SWMS defines a hierarchical virtual organization with three functional layers:
 ## Architecture
 
 ```
@@ -59,53 +68,53 @@ awaiting_reply → awaiting_assign_ack → awaiting_completion → awaiting_rese
 
 ## Collection Protocol
 
+# Smart Waste Management System – Sequence Diagram
 ```mermaid
 sequenceDiagram
     participant Bin as SmartBin
     participant CC as ControlCenter
-    participant Truck1 as Truck (first)
-    participant Truck2 as Truck (second)
-    participant Logger
+    participant T1 as Truck1
+    participant T2 as Truck2
+    participant Log as Logger
 
     Note over Bin: Periodically fills up
     Bin->>Bin: increase_level()
     alt Bin becomes full
         Bin->>CC: bin_full(BinId, Token)
-        Bin->>Logger: log(info, bin_full, BinId)
+        Bin->>Log: log(info, bin_full, BinId)
         CC->>CC: generate ReqId, select idle truck
-        CC->>Truck1: pickup_request(BinId, ReqId, Token)
-        CC->>Logger: log(info, pickup_request_sent, ReqId, BinId, Truck1)
+        CC->>T1: pickup_request(BinId, ReqId, Token)
+        CC->>Log: log(info, pickup_request_sent, ReqId, BinId, T1)
 
         alt Truck1 accepts
-            Truck1->>CC: job_accept(Truck1, BinId, ReqId, Token)
-            Truck1->>Logger: log(info, pickup_accept, BinId)
+            T1->>CC: job_accept(T1, BinId, ReqId, Token)
+            T1->>Log: log(info, pickup_accept, BinId)
             CC->>CC: update state → awaiting_assign_ack
-            CC->>Truck1: assignment(BinId, ReqId, Token)
-            Truck1->>CC: assignment_ack(Truck1, BinId, ReqId, Token)
+            CC->>T1: assignment(BinId, ReqId, Token)
+            T1->>CC: assignment_ack(T1, BinId, ReqId, Token)
             CC->>CC: update state → awaiting_completion
-            Note over Truck1: move() timer
-            Truck1->>Truck1: move() for move_time ticks
-            Note over Truck1: collect() timer
-            Truck1->>Truck1: collect() for collect_time ticks
-            Truck1->>CC: collection_complete(BinId, ReqId, Token)
+            Note over T1: move() timer
+            T1->>T1: move() for move_time ticks
+            Note over T1: collect() timer
+            T1->>T1: collect() for collect_time ticks
+            T1->>CC: collection_complete(BinId, ReqId, Token)
             CC->>CC: update state → awaiting_reset_ack
             CC->>Bin: reset_bin(BinId, ReqId, Token)
             Bin->>Bin: reset level to 0
             Bin->>CC: reset_ack(BinId, ReqId, Token)
-            Bin->>Logger: log(info, bin_reset, BinId)
+            Bin->>Log: log(info, bin_reset, BinId)
             CC->>CC: close request, clear inflight
-            CC->>Logger: log(info, request_closed, ReqId, BinId, Truck1)
+            CC->>Log: log(info, request_closed, ReqId, BinId, T1)
 
         else Truck1 refuses
-            Truck1->>CC: job_refuse(Truck1, BinId, ReqId, Token)
-            CC->>CC: mark tried(BinId, Truck1), retry
-            CC->>Truck2: pickup_request(BinId, ReqId, Token)
-            Note over Truck2: same accept flow as above
+            T1->>CC: job_refuse(T1, BinId, ReqId, Token)
+            CC->>CC: mark tried(BinId, T1), retry
+            CC->>T2: pickup_request(BinId, ReqId, Token)
+            Note over T2: same accept flow as above
         end
     end
 
-    Note over Logger: All log events are deduplicated within a time window
-```
+    Note over Log: All log events are deduplicated within a time window
 
 If a truck is busy, the control center automatically retries with the next available truck. Each protocol stage is independently guarded by a configurable TTL counter so no request can stall indefinitely.
 
