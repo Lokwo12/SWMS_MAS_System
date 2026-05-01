@@ -506,4 +506,60 @@ Licensed to studentSP4.6cc.univaq.it
 [logger] INFO  request_closed  req=35 bin=smartbin2
 [logger] INFO  job_accepted  req=36 bin=smartbin3 truck=truck2
 [logger] INFO  level_update  bin=smartbin1 level=40%
-[logger] INFO  level_update  bin
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  collection_done  req=36 bin=smartbin3 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  collection_complete  req=36 bin=smartbin3 truck=truck2
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  bin_reset  req=36 bin=smartbin3
+[logger] INFO  request_closed  req=36 bin=smartbin3
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=37 bin=smartbin1 truck=truck2
+[logger] INFO  pickup_accepted  req=37 bin=smartbin1 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] INFO  job_accepted  req=37 bin=smartbin1 truck=truck2
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  collection_done  req=37 bin=smartbin1 truck=truck2
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  collection_complete  req=37 bin=smartbin1 truck=truck2
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=38 bin=smartbin2 truck=truck2
+[logger] INFO  pickup_accepted  req=38 bin=smartbin2 truck=truck2
+[logger] INFO  bin_reset  req=37 bin=smartbin1
+[logger] INFO  job_accepted  req=38 bin=smartbin2 truck=truck2
+[logger] INFO  request_closed  req=37 bin=smartbin1
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  collection_done  req=38 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=38 bin=smartbin2 truck=truck2
+[logger] INFO  level_update  bin=smartbin3 level=100%
+[logger] WARN  bin_full          bin=smartbin3
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  bin_reset  req=38 bin=smartbin2
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=39 bin=smartbin3 truck=truck1
+[logger] INFO  request_closed  req=38 bin=smartbin2
+[logger] INFO  pickup_accepted  req=39 bin=smartbin3 truck=truck1
+[logger] INFO  job_accepted  req=39 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  collection_done  req=39 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  collection_complete  req=39 bin=smartbin3 truck=truck1
+[logger] INFO  bin_reset  req=39 bin=smartbin3
+[logger] INFO  request_closed  req=39 bin=smartbin3
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=40 bin=smartbin1 truck=truck2
+[logger] INFO  pickup_accepted  req=40 bin=smartbin1 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] INFO  job_accepted Terminated
