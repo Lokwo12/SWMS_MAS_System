@@ -59,19 +59,52 @@ awaiting_reply → awaiting_assign_ack → awaiting_completion → awaiting_rese
 
 ## Collection Protocol
 
-```
-SmartBin        ControlCenter          Truck           SmartBin
-    │                 │                  │                 │
-    │──bin_full──────▶│                  │                 │
-    │                 │──pickup_request─▶│                 │
-    │                 │◀─job_accept──────│                 │
-    │                 │──assignment─────▶│                 │
-    │                 │◀─assignment_ack──│                 │
-    │                 │    [move + collect]                │
-    │                 │◀─collection_complete───────────────│
-    │                 │──reset_bin──────────────────────── ▶│
-    │                 │◀─reset_ack──────────────────────── │
-    ║  [cycle closed] ║                  ║                 ║
+```mermaid
+sequenceDiagram
+    participant Bin as SmartBin
+    participant CC as ControlCenter
+    participant Truck1 as Truck (first)
+    participant Truck2 as Truck (second)
+    participant Logger
+
+    Note over Bin: Periodically fills up
+    Bin->>Bin: increase_level()
+    alt Bin becomes full
+        Bin->>CC: bin_full(BinId, Token)
+        Bin->>Logger: log(info, bin_full, BinId)
+        CC->>CC: generate ReqId, select idle truck
+        CC->>Truck1: pickup_request(BinId, ReqId, Token)
+        CC->>Logger: log(info, pickup_request_sent, ReqId, BinId, Truck1)
+
+        alt Truck1 accepts
+            Truck1->>CC: job_accept(Truck1, BinId, ReqId, Token)
+            Truck1->>Logger: log(info, pickup_accept, BinId)
+            CC->>CC: update state → awaiting_assign_ack
+            CC->>Truck1: assignment(BinId, ReqId, Token)
+            Truck1->>CC: assignment_ack(Truck1, BinId, ReqId, Token)
+            CC->>CC: update state → awaiting_completion
+            Note over Truck1: move() timer
+            Truck1->>Truck1: move() for move_time ticks
+            Note over Truck1: collect() timer
+            Truck1->>Truck1: collect() for collect_time ticks
+            Truck1->>CC: collection_complete(BinId, ReqId, Token)
+            CC->>CC: update state → awaiting_reset_ack
+            CC->>Bin: reset_bin(BinId, ReqId, Token)
+            Bin->>Bin: reset level to 0
+            Bin->>CC: reset_ack(BinId, ReqId, Token)
+            Bin->>Logger: log(info, bin_reset, BinId)
+            CC->>CC: close request, clear inflight
+            CC->>Logger: log(info, request_closed, ReqId, BinId, Truck1)
+
+        else Truck1 refuses
+            Truck1->>CC: job_refuse(Truck1, BinId, ReqId, Token)
+            CC->>CC: mark tried(BinId, Truck1), retry
+            CC->>Truck2: pickup_request(BinId, ReqId, Token)
+            Note over Truck2: same accept flow as above
+        end
+    end
+
+    Note over Logger: All log events are deduplicated within a time window
 ```
 
 If a truck is busy, the control center automatically retries with the next available truck. Each protocol stage is independently guarded by a configurable TTL counter so no request can stall indefinitely.
