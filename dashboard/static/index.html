@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SWMS Dashboard</title>
+<style>
+:root {
+  --bg:      #0d1117;
+  --card:    #161b22;
+  --border:  #21262d;
+  --text:    #e6edf3;
+  --muted:   #7d8590;
+  --green:   #3fb950;
+  --amber:   #d29922;
+  --red:     #f85149;
+  --blue:    #58a6ff;
+  --orange:  #f0883e;
+  --purple:  #bc8cff;
+  --teal:    #39d353;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, monospace;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+header h1 { font-size: 15px; font-weight: 700; letter-spacing: .5px; }
+.badge-live {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 600; color: var(--green);
+}
+.dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green);
+}
+.dot.pulse { animation: pulse 1.4s infinite; }
+.dot.dead  { background: var(--red); animation: none; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.25} }
+.last-evt { font-size: 10px; color: var(--muted); font-family: monospace; }
+
+/* ── Layout ──────────────────────────────────────────────────── */
+.content {
+  flex: 1;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+/* ── Card ────────────────────────────────────────────────────── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+}
+.card-title {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+/* ── Control Center ──────────────────────────────────────────── */
+.cc-stats {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 14px;
+}
+.stat { display: flex; flex-direction: column; align-items: flex-start; }
+.stat-val { font-size: 26px; font-weight: 700; line-height: 1; }
+.stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; margin-top: 2px; }
+.stat-val.v-issued    { color: var(--text); }
+.stat-val.v-completed { color: var(--green); }
+.stat-val.v-inflight  { color: var(--blue); }
+.stat-val.v-failed    { color: var(--red); }
+.uptime-row {
+  font-size: 11px; color: var(--muted);
+  margin-bottom: 14px; margin-top: -8px;
+}
+.uptime-row span { color: var(--text); }
+
+/* inflight table */
+.tbl { width: 100%; border-collapse: collapse; }
+.tbl th {
+  color: var(--muted); font-weight: 500;
+  text-align: left; padding: 4px 10px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .8px;
+  border-bottom: 1px solid var(--border);
+}
+.tbl td { padding: 7px 10px; border-bottom: 1px solid rgba(33,38,45,.6); }
+.tbl tr:last-child td { border-bottom: none; }
+.no-data { color: var(--muted); font-style: italic; text-align: center; padding: 10px; }
+
+/* stage pill */
+.pill {
+  display: inline-block; padding: 2px 8px;
+  border-radius: 10px; font-size: 10px; font-weight: 600;
+}
+.pill-opened        { background:#161b22; color:var(--muted); border:1px solid var(--border);}
+.pill-awaiting_reply{ background:#1c2333; color:var(--purple);}
+.pill-accepted      { background:#0d2b45; color:var(--blue);}
+.pill-moving        { background:#0d2b45; color:var(--blue);}
+.pill-awaiting_completion{background:#0d2b45;color:var(--blue);}
+.pill-collecting    { background:#2d1b00; color:var(--orange);}
+.pill-awaiting_reset{ background:#1a2a1a; color:var(--green);}
+.pill-awaiting_close{ background:#1a2a1a; color:var(--teal);}
+.pill-warn          { background:#2d1b00; color:var(--amber);}
+
+/* ── Main 3-column grid ──────────────────────────────────────── */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+}
+
+/* ── Bins ────────────────────────────────────────────────────── */
+.bin-block { margin-bottom: 12px; }
+.bin-block:last-child { margin-bottom: 0; }
+.bin-header {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 5px;
+}
+.bin-name-lbl { font-weight: 600; font-size: 13px; }
+.bin-pct { font-weight: 700; font-size: 13px; }
+.bar-bg {
+  background: var(--border);
+  border-radius: 4px; height: 18px;
+  overflow: hidden; margin-bottom: 4px;
+  transition: box-shadow .4s ease;
+}
+.bar-fill {
+  height: 100%;
+  transition: width 1.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), background .4s ease;
+}
+.bar-bg.bar-alert { box-shadow: 0 0 8px 3px var(--purple); }
+.bar-bg.bar-full  { box-shadow: 0 0 6px 2px var(--red); }
+@keyframes bar-stripe {
+  from { background-position: 28px 0; }
+  to   { background-position: 0 0; }
+}
+.bar-fill.bar-collecting {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent, transparent 7px,
+    rgba(255,255,255,0.12) 7px, rgba(255,255,255,0.12) 14px
+  );
+  animation: bar-stripe .5s linear infinite;
+}
+.bin-state-lbl { font-size: 10px; color: var(--muted); }
+.bin-meta { font-size: 10px; color: var(--muted); margin-top: 3px; }
+.bin-meta span { color: var(--text); }
+
+/* ── Bin fill-level history steps ───────────────────────────── */
+.bin-steps {
+  display: flex;
+  gap: 2px;
+  margin: 5px 0 3px;
+  align-items: flex-end;
+}
+.lvl-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: default;
+  position: relative;
+}
+.lvl-dot {
+  font-size: 15px;
+  line-height: 1;
+  transition: color .3s ease;
+}
+.lvl-step-pct {
+  font-size: 9px;
+  font-family: monospace;
+  margin-top: 2px;
+  color: var(--muted);
+}
+.lvl-step-time {
+  font-size: 8px;
+  font-family: monospace;
+  color: var(--muted);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+}
+/* connector line between dots */
+.lvl-step:not(:first-child)::before {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: calc(-50% + 6px);
+  right: calc(50% + 6px);
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Trucks ──────────────────────────────────────────────────── */
+.truck-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 0; border-bottom: 1px solid var(--border);
+}
+.truck-row:last-child { border-bottom: none; }
+.truck-icon { font-size: 18px; width: 22px; text-align: center; }
+.truck-lbl  { flex: 1; font-weight: 600; }
+.truck-badge {
+  font-size: 10px; font-weight: 700;
+  padding: 3px 9px; border-radius: 10px;
+}
+.tb-idle       { background:#1c2333; color:var(--muted); }
+.tb-busy       { background:#2d2200; color:var(--amber); }
+.tb-moving     { background:#0d2b45; color:var(--blue); }
+.tb-collecting { background:#2d1b00; color:var(--orange); }
+.truck-assign  { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+/* ── Assignments ─────────────────────────────────────────────── */
+.assign-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.assign-row:last-child { border-bottom: none; }
+.assign-icon { font-size: 16px; padding-top: 2px; }
+.assign-body { flex: 1; }
+.assign-title { font-weight: 600; margin-bottom: 2px; }
+.assign-meta  { font-size: 11px; color: var(--muted); }
+
+/* ── Event log ───────────────────────────────────────────────── */
+.log-scroll {
+  max-height: 220px;
+  overflow-y: auto;
+}
+.log-tbl { width: 100%; border-collapse: collapse; }
+.log-tbl th {
+  color: var(--muted); font-weight: 500;
+  text-align: left; padding: 3px 8px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .8px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; background: var(--card);
+}
+.log-tbl td { padding: 4px 8px; font-family: monospace; font-size: 11px; }
+.log-tbl tr { border-bottom: 1px solid rgba(33,38,45,.4); }
+.log-tbl tr:last-child { border-bottom: none; }
+.lv-info  { color: var(--text); }
+.lv-warn  { color: var(--amber); }
+.lv-error { color: var(--red); }
+
+/* ── Scrollbar ───────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══════════════════════════════════════════════════════════ -->
+<header>
+  <h1>⚙ Smart Waste Management System — Dashboard</h1>
+  <div style="display:flex;align-items:center;gap:20px">
+    <span class="last-evt" id="last-evt"></span>
+    <div class="badge-live">
+      <div class="dot pulse" id="live-dot"></div>
+      <span id="live-txt">Connecting…</span>
+    </div>
+  </div>
+</header>
+
+<div class="content">
+
+  <!-- ═══ CONTROL CENTER ══════════════════════════════════════════════════ -->
+  <div class="card">
+    <div class="card-title">Control Center</div>
+    <div class="cc-stats">
+      <div class="stat">
+        <span class="stat-val v-issued"    id="cc-seq">0</span>
+        <span class="stat-label">Issued</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val v-completed" id="cc-done">0</span>
+        <span class="stat-label">Completed</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val v-inflight"  id="cc-fly">0</span>
+        <span class="stat-label">Inflight</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val v-failed"    id="cc-fail">0</span>
+        <span class="stat-label">Failed</span>
+      </div>
+      <div class="stat" style="margin-left:auto">
+        <span class="stat-val" id="cc-rate" style="color:var(--teal);font-size:20px">—</span>
+        <span class="stat-label">Req / min</span>
+      </div>
+    </div>
+    <div class="uptime-row">Session started: <span id="cc-started">—</span> &nbsp;·&nbsp; Uptime: <span id="cc-uptime">—</span></div>
+    <table class="tbl">
+      <thead><tr>
+        <th>REQ</th><th>BIN</th><th>TRUCK</th><th>STAGE</th><th>ELAPSED</th>
+      </tr></thead>
+      <tbody id="inflight-body">
+        <tr><td colspan="5" class="no-data">No active requests</td></tr>
+      </tbody>
+    </table>
+    <div id="failures-section" style="display:none;margin-top:14px">
+      <div class="card-title" style="margin-bottom:8px">Recent Failures</div>
+      <table class="tbl">
+        <thead><tr><th>TIME</th><th>TYPE</th><th>BIN</th><th>TRUCK</th></tr></thead>
+        <tbody id="failures-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══ MAIN GRID ═══════════════════════════════════════════════════════ -->
+  <div class="main-grid">
+
+    <!-- Smart Bins -->
+    <div class="card">
+      <div class="card-title">Smart Bins</div>
+      <div id="bins-panel"></div>
+    </div>
+
+    <!-- Trucks -->
+    <div class="card">
+      <div class="card-title">Trucks</div>
+      <div id="trucks-panel"></div>
+    </div>
+
+    <!-- Active Assignments -->
+    <div class="card">
+      <div class="card-title">Active Assignments</div>
+      <div id="assign-panel">
+        <div class="no-data">No active assignments</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ EVENT LOG ═══════════════════════════════════════════════════════ -->
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div class="card-title" style="margin-bottom:0">Event Log</div>
+      <label style="font-size:10px;color:var(--muted);display:flex;align-items:center;gap:5px;cursor:pointer">
+        <input type="checkbox" id="log-hide-fill" checked
+               onchange="if(_liveState) renderLog(_liveState.events)">
+        hide fill events
+      </label>
+    </div>
+    <div class="log-scroll">
+      <table class="log-tbl">
+        <thead><tr>
+          <th>TIME</th><th>LEVEL</th><th>EVENT</th>
+          <th>BIN</th><th>TRUCK</th><th>REQ</th>
+        </tr></thead>
+        <tbody id="log-body">
+          <tr><td colspan="6" class="no-data">Waiting for events…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- .content -->
+
+<script>
+// ── Helpers ────────────────────────────────────────────────────────────────
+function fmtTime(ts) {
+  return new Date(ts * 1000).toTimeString().slice(0, 8);
+}
+function elapsed(ts) {
+  const s = Math.max(0, Math.round(Date.now() / 1000 - ts));
+  return s < 60 ? s + 's' : Math.floor(s/60) + 'm ' + (s%60) + 's';
+}
+function fmtAgo(ts) {
+  const s = Math.max(0, Math.round(Date.now() / 1000 - ts));
+  if (s < 60)   return s + 's ago';
+  if (s < 3600) return Math.floor(s/60) + 'm ago';
+  return Math.floor(s/3600) + 'h ago';
+}
+function throughput(reqTimes) {
+  const now = Date.now() / 1000;
+  const win = 300; // 5-minute window
+  const recent = (reqTimes || []).filter(t => now - t < win);
+  if (recent.length < 2) return null;
+  const span = now - recent[0];
+  return (recent.length / span * 60).toFixed(1);
+}
+function binColor(lvl, st) {
+  if (st === 'alerting') return 'var(--purple)';
+  if (lvl >= 100) return 'var(--red)';
+  if (lvl >= 60)  return 'var(--amber)';
+  return 'var(--green)';
+}
+function pillClass(stage) {
+  const map = {
+    opened:               'pill-opened',
+    awaiting_reply:       'pill-awaiting_reply',
+    accepted:             'pill-accepted',
+    moving:               'pill-moving',
+    awaiting_completion:  'pill-awaiting_completion',
+    collecting:           'pill-collecting',
+    awaiting_reset:       'pill-awaiting_reset',
+    awaiting_close:       'pill-awaiting_close',
+  };
+  return 'pill ' + (map[stage] || 'pill-opened');
+}
+function truckBadgeClass(s) {
+  return 'truck-badge tb-' + (s || 'idle');
+}
+function truckIcon(s) {
+  if (s === 'moving')     return '▶';
+  if (s === 'collecting') return '◉';
+  if (s === 'busy')       return '●';
+  return '◦';
+}
+
+// ── Render ─────────────────────────────────────────────────────────────────
+function renderAll(s) {
+  renderCC(s.cc, s.started_at);
+  renderBins(s.bins);
+  renderTrucks(s.trucks, s.cc.inflight);
+  renderAssignments(s.cc.inflight, s.trucks);
+  renderLog(s.events);
+}
+
+function renderCC(cc, startedAt) {
+  document.getElementById('cc-seq').textContent  = cc.req_seq   || 0;
+  document.getElementById('cc-done').textContent = cc.completed || 0;
+  document.getElementById('cc-fly').textContent  = Object.keys(cc.inflight || {}).length;
+  document.getElementById('cc-fail').textContent = cc.failed    || 0;
+
+  // Throughput
+  const rate = throughput(cc.req_times);
+  document.getElementById('cc-rate').textContent = rate != null ? rate : '—';
+
+  // Session uptime
+  if (startedAt) {
+    document.getElementById('cc-started').textContent = fmtTime(startedAt);
+    document.getElementById('cc-uptime').textContent  = elapsed(startedAt);
+  }
+
+  // Inflight table
+  const rows = Object.values(cc.inflight || {});
+  const tbody = document.getElementById('inflight-body');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="no-data">No active requests</td></tr>';
+  } else {
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td>#${r.req}</td>
+        <td>${r.bin || '—'}</td>
+        <td>${r.truck || '—'}</td>
+        <td><span class="${pillClass(r.stage)}">${r.stage}</span></td>
+        <td>${elapsed(r.ts)}</td>
+      </tr>`).join('');
+  }
+
+  // Failures section
+  const failSec = document.getElementById('failures-section');
+  const failures = cc.failures || [];
+  if (failures.length) {
+    failSec.style.display = '';
+    document.getElementById('failures-body').innerHTML =
+      [...failures].reverse().slice(0, 10).map(f => `
+        <tr>
+          <td>${fmtTime(f.ts)}</td>
+          <td>${f.type  || '—'}</td>
+          <td>${f.bin   || '—'}</td>
+          <td>${f.truck || '—'}</td>
+        </tr>`).join('');
+  } else {
+    failSec.style.display = 'none';
+  }
+}
+
+// ── Bin render helpers ────────────────────────────────────────────────────
+function _binStateHtml(state) {
+  if (state === 'full')     return `<span style="color:var(--red)">⚠ FULL — awaiting dispatch</span>`;
+  if (state === 'alerting') return `<span style="color:var(--purple)">◉ alert sent — truck incoming</span>`;
+  return `<span style="color:var(--muted)">${state}</span>`;
+}
+function _binStepsHtml(b) {
+  const histMap = {};
+  for (const h of (b.history || [])) histMap[h.level] = h.ts;
+  return [0, 20, 40, 60, 80, 100].map(step => {
+    const reached = step === 0 || step in histMap;
+    const c = reached ? binColor(step === 0 ? 1 : step, b.state) : 'var(--border)';
+    const timeLabel = (step > 0 && reached)
+      ? `<div class="lvl-step-time">${fmtTime(histMap[step])}</div>`
+      : `<div class="lvl-step-time">&nbsp;</div>`;
+    const tooltip = step === 0
+      ? 'Start (empty)'
+      : (reached ? 'Reached at ' + fmtTime(histMap[step]) : 'Not yet reached');
+    return `<div class="lvl-step" title="${tooltip}">
+      <div class="lvl-dot" style="color:${c}">${reached ? '●' : '○'}</div>
+      <div class="lvl-step-pct" style="color:${c}">${step}%</div>
+      ${timeLabel}
+    </div>`;
+  }).join('');
+}
+function _binMetaHtml(b) {
+  return `Emptied: <span>${b.collections || 0}x</span>` +
+    (b.last_emptied ? ` &nbsp;·&nbsp; last at <span>${fmtTime(b.last_emptied)}</span>` : '');
+}
+function _binGlow(block, b, isCollecting) {
+  const bg   = block.querySelector('.bar-bg');
+  const fill = block.querySelector('.bar-fill');
+  if (!bg) return;
+  bg.classList.toggle('bar-alert', b.state === 'alerting');
+  bg.classList.toggle('bar-full',  b.level >= 100 && b.state !== 'alerting');
+  if (fill) fill.classList.toggle('bar-collecting', !!isCollecting);
+}
+
+function renderBins(bins) {
+  const p = document.getElementById('bins-panel');
+
+  // Which bins have a truck currently collecting from them?
+  const collecting = {};
+  for (const r of Object.values((_liveState && _liveState.cc.inflight) || {})) {
+    if (r.bin && r.stage === 'collecting') collecting[r.bin] = true;
+  }
+
+  // Remove blocks for bins that no longer exist
+  for (const el of [...p.querySelectorAll('[data-bin]')]) {
+    if (!(el.dataset.bin in bins)) el.remove();
+  }
+
+  for (const [name, b] of Object.entries(bins)) {
+    const col = binColor(b.level, b.state);
+    const isCollecting = !!collecting[name];
+    let block = p.querySelector(`[data-bin="${name}"]`);
+
+    if (!block) {
+      // First paint: create block with bar at width 0, then animate in
+      block = document.createElement('div');
+      block.className = 'bin-block';
+      block.dataset.bin = name;
+      block.innerHTML = `
+        <div class="bin-header">
+          <span class="bin-name-lbl">${name}</span>
+          <span class="bin-pct" style="color:${col}">${b.level}%</span>
+        </div>
+        <div class="bar-bg">
+          <div class="bar-fill" style="width:0%;background:${col}"></div>
+        </div>
+        <div class="bin-steps">${_binStepsHtml(b)}</div>
+        <div class="bin-state-lbl">${_binStateHtml(b.state)}</div>
+        <div class="bin-meta">${_binMetaHtml(b)}</div>`;
+      p.appendChild(block);
+      // Double rAF ensures the 0% is painted before the transition fires
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        const fill = block.querySelector('.bar-fill');
+        if (fill) fill.style.width = b.level + '%';
+        _binGlow(block, b, isCollecting);
+      }));
+    } else {
+      // Stable update — only mutate what changed; CSS transition fires on bar-fill
+      const fill = block.querySelector('.bar-fill');
+      if (fill) { fill.style.width = b.level + '%'; fill.style.background = col; }
+      block.querySelector('.bin-pct').textContent  = b.level + '%';
+      block.querySelector('.bin-pct').style.color  = col;
+      block.querySelector('.bin-state-lbl').innerHTML = _binStateHtml(b.state);
+      block.querySelector('.bin-steps').innerHTML     = _binStepsHtml(b);
+      block.querySelector('.bin-meta').innerHTML      = _binMetaHtml(b);
+      _binGlow(block, b, isCollecting);
+    }
+  }
+}
+
+function renderTrucks(trucks, inflight) {
+  // build map: truck name -> inflight entry
+  const assign = {};
+  for (const r of Object.values(inflight || {})) {
+    if (r.truck) assign[r.truck] = r;
+  }
+  const p = document.getElementById('trucks-panel');
+  p.innerHTML = Object.entries(trucks).map(([name, t]) => {
+    const job = assign[name];
+    const assignLine = job && job.bin
+      ? `<div class="truck-assign">→ ${job.bin} &nbsp;·&nbsp; <span class="${pillClass(job.stage)}">${job.stage}</span></div>`
+      : '';
+    return `
+    <div class="truck-row">
+      <span class="truck-icon" style="color:${t.state==='moving'?'var(--blue)':t.state==='collecting'?'var(--orange)':'var(--muted)'}">
+        ${truckIcon(t.state)}
+      </span>
+      <span class="truck-lbl">${name}${assignLine}</span>
+      <span class="${truckBadgeClass(t.state)}">${t.state.toUpperCase()}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderAssignments(inflight, trucks) {
+  const p = document.getElementById('assign-panel');
+  const active = Object.values(inflight || {}).filter(r =>
+    r.truck && r.truck !== 'none' && r.truck !== ''
+  );
+  if (!active.length) {
+    p.innerHTML = '<div class="no-data">No active assignments</div>';
+    return;
+  }
+  p.innerHTML = active.map(r => `
+    <div class="assign-row">
+      <span class="assign-icon" style="color:var(--blue)">▶</span>
+      <div class="assign-body">
+        <div class="assign-title">${r.truck} → ${r.bin}</div>
+        <div class="assign-meta">req=#${r.req} &nbsp;·&nbsp; <span class="${pillClass(r.stage)}">${r.stage}</span></div>
+      </div>
+    </div>`).join('');
+}
+
+function renderLog(events) {
+  const tbody = document.getElementById('log-body');
+  if (!events || !events.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="no-data">Waiting for events…</td></tr>';
+    return;
+  }
+  const hideFill = document.getElementById('log-hide-fill')?.checked;
+  const filtered = hideFill ? events.filter(e => e.name !== 'level_update') : events;
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="no-data">No events (fill events hidden)</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filtered.slice(0, 100).map(e => {
+    const cls = e.level === 'warn' ? 'lv-warn' : e.level === 'error' ? 'lv-error' : 'lv-info';
+    const evDetail = e.lvl ? `<span style="color:var(--muted)"> ${e.lvl}%</span>` : '';
+    return `<tr class="${cls}">
+      <td title="${fmtAgo(e.ts)}">${fmtTime(e.ts)}</td>
+      <td>${(e.level||'').toUpperCase()}</td>
+      <td>${e.name||''}${evDetail}</td>
+      <td>${e.bin||''}</td>
+      <td>${e.truck||''}</td>
+      <td>${e.req ? '#'+e.req : ''}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── State cache (for elapsed timer refresh) ────────────────────────────────
+let _liveState = null;
+const _origRenderAll = renderAll;
+window.renderAll = function(s) { _liveState = s; _origRenderAll(s); };
+
+// Refresh elapsed timers + uptime every second
+setInterval(() => {
+  if (_liveState) {
+    renderCC(_liveState.cc, _liveState.started_at);
+  }
+}, 1000);
+
+// ── WebSocket ──────────────────────────────────────────────────────────────
+let ws;
+function connect() {
+  ws = new WebSocket(`ws://${location.host}/ws`);
+
+  ws.onopen = () => {
+    const dot = document.getElementById('live-dot');
+    dot.classList.remove('dead');
+    dot.classList.add('pulse');
+    document.getElementById('live-txt').textContent = 'LIVE';
+  };
+
+  ws.onclose = () => {
+    const dot = document.getElementById('live-dot');
+    dot.classList.remove('pulse');
+    dot.classList.add('dead');
+    document.getElementById('live-txt').textContent = 'Reconnecting…';
+    setTimeout(connect, 2500);
+  };
+
+  ws.onmessage = e => {
+    const msg = JSON.parse(e.data);
+    if (msg.type === 'reset') {
+      // MAS restarted — clear display and show fresh state
+      window.renderAll(msg.state);
+      return;
+    }
+    if (msg.state) window.renderAll(msg.state);
+    if (msg.event) {
+      const lvl = (msg.event.level || 'info').toUpperCase();
+      const cls = lvl === 'WARN' ? 'lv-warn' : lvl === 'ERROR' ? 'lv-error' : 'lv-info';
+      const el = document.getElementById('last-evt');
+      if (el) el.innerHTML =
+        `<span class="${cls}">${lvl} &nbsp;${msg.event.name}</span>` +
+        (msg.event.bin   ? ` &nbsp;bin=${msg.event.bin}`   : '') +
+        (msg.event.lvl   ? ` &nbsp;${msg.event.lvl}%`      : '') +
+        (msg.event.truck ? ` &nbsp;truck=${msg.event.truck}` : '') +
+        (msg.event.req   ? ` &nbsp;req=#${msg.event.req}`   : '');
+    }
+  };
+}
+connect();
+</script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+% ============================================================================
+% TRUCK AGENT - SWMS
+% ============================================================================
+eventE([pickup_request,    % E - received from control_center
+        assignment,         % E - received from control_center
+        job_accept,         % E - not used at truck level
+        job_refuse,         % E - not used at truck level
+        assignment_ack,     % E - not used at truck level
+        collection_complete,% E - not used at truck level
+        reset_ack]).        % E - not used at truck level
+
+:- dynamic truck_state/1, current_job/2, started/0, status_counter/1, assign_wait_counter/1,
+           seen_assignment/1, completed_local/1, last_monitor_ts/1,
+           busy_logged_req/1, move_counter/1, collect_counter/1.
+
+deltaT(4). move_time(2). collect_time(1). assign_wait_limit(6).
+shared_token(city_token_2026). monitor_interval_ms(1000).
+
+even_args([pickup_request(_,_,_), % E - from control_center
+           assignment(_,_,_)]).    % E - from control_center
+
+even(pickup_request(_,_,_)). even(assignment(_,_,_)).
+even(handle_pickup_request(_,_)).
+even(accept_request(_,_)).    even(refuse_request(_,_)).
+even(handle_assignment(_,_)). even(start_move(_,_)).
+even(do_refuse(_,_)).         even(success(_,_)).
+even(cleanup).                even(assignment_timeout).
+even(monitor(dummy)).         even(start).
+even(monitor_tick).           even(tick_status_counter).
+even(tick_assignment_wait).   even(tick_move_phase).
+even(tick_collect_phase).     even(status_check).
+
+
+% --- Messaging action predicates ---
+send_acceptA(Bin, ReqId, Token) :-
+    agent(Truck), messageA(control_center, send_message(job_accept(Truck, Bin, ReqId, Token), Truck), Truck).
+send_refuseA(Bin, ReqId, Token) :-
+    agent(Truck), messageA(control_center, send_message(job_refuse(Truck, Bin, ReqId, Token), Truck), Truck).
+send_assignment_ackA(Bin, ReqId, Token) :-
+    agent(Truck), messageA(control_center, send_message(assignment_ack(Truck, Bin, ReqId, Token), Truck), Truck).
+send_completionA(Bin, ReqId, Token) :-
+    agent(Truck), messageA(control_center, send_message(collection_complete(Bin, ReqId, Token), Truck), Truck).
+
+% --- State / display action predicates ---
+display_binA(Bin, Bp)    :- ( atom_concat(smart_bin, Nb, Bin) -> atom_concat(smartbin, Nb, Bp) ; Bp = Bin ).
+set_idleA                :- retractall(truck_state(_)), assert(truck_state(idle)).
+set_stateA(S)            :- retractall(truck_state(_)), assert(truck_state(S)).
+timestampA(Now)          :- statistics(walltime, [Now,_]).
+log_pickup_acceptA(Truck, Bp)   :- format('[~w] stage=pickup_accept bin=~w~n', [Truck, Bp]).
+log_pickup_refuseA(Truck, Bp)   :- format('[~w] stage=pickup_refuse bin=~w~n', [Truck, Bp]).
+log_move_toA(Truck, Bp, M)      :- format('[~w] stage=move_to_bin bin=~w eta=~ws~n', [Truck, Bp, M]).
+log_collect_wasteA(Truck, Bp, Ct) :- format('[~w] stage=collect_waste bin=~w eta=~ws~n', [Truck, Bp, Ct]).
+log_report_completeA(Truck, Bp) :- format('[~w] stage=report_completion bin=~w~n', [Truck, Bp]).
+log_startedA(Truck)             :- format('[~w] started~n', [Truck]).
+
+% --- Incoming message handlers ---
+pickup_request_inI(Bin, ReqId, Token) :> shared_token(Token), evi(handle_pickup_request(Bin, ReqId)).
+assignment_inI(Bin, ReqId, Token)     :> shared_token(Token), evi(handle_assignment(Bin, ReqId)).
+
+% --- Pickup request handling (multi-clause DALI guard pattern) ---
+handle_pickup_requestI(_, ReqId) :> completed_local(ReqId), !.
+handle_pickup_requestI(Bin, ReqId) :>
+    current_job(Bin, ReqId), truck_state(waiting_assignment), !,
+    evi(accept_request(Bin, ReqId)).
+handle_pickup_requestI(Bin, ReqId) :>
+    truck_state(S), S \= idle, !,
+    ( \+ busy_logged_req(ReqId) ->
+        assert(busy_logged_req(ReqId)), evi(refuse_request(Bin, ReqId))
+    ; true
+    ).
+handle_pickup_requestI(Bin, ReqId) :>
+    truck_state(idle), !,
+    set_stateA(waiting_assignment),
+    retractall(current_job(_,_)), assert(current_job(Bin, ReqId)),
+    assign_wait_limit(Limit), retractall(assign_wait_counter(_)), assert(assign_wait_counter(Limit)),
+    agent(Truck), display_binA(Bin, Bp), log_pickup_acceptA(Truck, Bp),
+    evi(accept_request(Bin, ReqId)).
+handle_pickup_requestI(_, _) :> true.
+
+accept_requestI(Bin, ReqId) :>
+    shared_token(Token), send_acceptA(Bin, ReqId, Token).
+
+refuse_requestI(Bin, ReqId) :>
+    agent(Truck), display_binA(Bin, Bp), log_pickup_refuseA(Truck, Bp),
+    evi(do_refuse(Bin, ReqId)).
+
+% --- Assignment handling (multi-clause DALI guard pattern) ---
+handle_assignmentI(_, ReqId) :> completed_local(ReqId), !.
+handle_assignmentI(Bin, ReqId) :>
+    seen_assignment(ReqId), current_job(Bin, ReqId), !,
+    shared_token(Token), send_assignment_ackA(Bin, ReqId, Token).
+handle_assignmentI(Bin, ReqId) :>
+    current_job(Bin, ReqId), !, evi(start_move(Bin, ReqId)).
+handle_assignmentI(_, _) :> true.
+
+start_moveI(Bin, ReqId) :>
+    retractall(assign_wait_counter(_)), set_stateA(moving),
+    move_time(M), retractall(move_counter(_)), assert(move_counter(M)),
+    agent(Truck), display_binA(Bin, Bp), log_move_toA(Truck, Bp, M),
+    assert(seen_assignment(ReqId)),
+    shared_token(Token), send_assignment_ackA(Bin, ReqId, Token).
+
+% --- Refuse, success, cleanup ---
+do_refuseI(Bin, ReqId) :>
+    agent(Truck), shared_token(Token), send_refuseA(Bin, ReqId, Token).
+
+successI(Bin, ReqId) :>
+    agent(Truck), display_binA(Bin, Bp), log_report_completeA(Truck, Bp),
+    assert(completed_local(ReqId)),
+    shared_token(Token), send_completionA(Bin, ReqId, Token),
+    set_idleA,
+    retractall(current_job(_,_)), retractall(assign_wait_counter(_)),
+    retractall(move_counter(_)), retractall(collect_counter(_)),
+    retractall(seen_assignment(ReqId)), retractall(busy_logged_req(ReqId)).
+
+cleanupI :>
+    retractall(current_job(_,_)), retractall(assign_wait_counter(_)),
+    retractall(move_counter(_)), retractall(collect_counter(_)), set_idleA.
+
+assignment_timeoutI :>
+    truck_state(waiting_assignment), current_job(Bin, ReqId),
+    evi(do_refuse(Bin, ReqId)), evi(cleanup).
+
+% --- Start ---
+monitor(dummy) :- evi(monitor(dummy)).
+startI :>
+    retractall(started), assert(started),
+    retractall(current_job(_,_)), set_idleA,
+    retractall(assign_wait_counter(_)),
+    retractall(seen_assignment(_)), retractall(completed_local(_)),
+    retractall(busy_logged_req(_)),
+    retractall(move_counter(_)), retractall(collect_counter(_)),
+    deltaT(D), retractall(status_counter(_)), assert(status_counter(D)),
+    timestampA(Now), retractall(last_monitor_ts(_)), assert(last_monitor_ts(Now)),
+    agent(Truck), log_startedA(Truck).
+
+% --- Monitor ---
+monitorI(dummy) :> \+ started, evi(start).
+monitorI(dummy) :>
+    started, timestampA(Now), last_monitor_ts(Last), monitor_interval_ms(Interval),
+    ( Now - Last < Interval -> true
+    ; retract(last_monitor_ts(Last)), assert(last_monitor_ts(Now)), evi(monitor_tick)
+    ).
+
+monitor_tickI :>
+    evi(tick_status_counter), evi(tick_assignment_wait),
+    evi(tick_move_phase), evi(tick_collect_phase).
+
+tick_status_counterI :>
+    status_counter(C),
+    ( C > 1 -> C1 is C-1, retract(status_counter(C)), assert(status_counter(C1))
+    ; C =:= 1 -> deltaT(D), retract(status_counter(1)), assert(status_counter(D))
+    ; true
+    ).
+
+tick_assignment_waitI :>
+    truck_state(waiting_assignment), assign_wait_counter(C),
+    ( C > 1 -> C1 is C-1, retract(assign_wait_counter(C)), assert(assign_wait_counter(C1))
+    ; C =:= 1 -> retract(assign_wait_counter(1)), evi(assignment_timeout)
+    ; true
+    ).
+
+tick_move_phaseI :>
+    truck_state(moving), move_counter(C),
+    ( C > 1 -> C1 is C-1, retract(move_counter(C)), assert(move_counter(C1))
+    ; C =:= 1 ->
+        retract(move_counter(1)), current_job(Bin, _ReqId),
+        collect_time(Ct), retractall(collect_counter(_)), assert(collect_counter(Ct)),
+        set_stateA(collecting),
+        agent(Truck), display_binA(Bin, Bp), log_collect_wasteA(Truck, Bp, Ct)
+    ; true
+    ).
+
+tick_collect_phaseI :>
+    truck_state(collecting), collect_counter(C),
+    ( C > 1 -> C1 is C-1, retract(collect_counter(C)), assert(collect_counter(C1))
+    ; C =:= 1 ->
+        retract(collect_counter(1)), current_job(Bin, ReqId), evi(success(Bin, ReqId))
+    ; true
+    ).
+
+:- initialization(monitor(dummy)).

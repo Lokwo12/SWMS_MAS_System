@@ -1,0 +1,6 @@
+agent('tmp/logger','logger','no',italian,
+      ['/home/studente/SWMS_MAS_System/conf/communication'],
+      ['/home/studente/SWMS_MAS_System/src/communication_fipa','/home/studente/SWMS_MAS_System/src/learning','/home/studente/SWMS_MAS_System/src/planasp'],
+      'no',
+      '/home/studente/SWMS_MAS_System/src/onto/dali_onto.txt',
+      [startI]).

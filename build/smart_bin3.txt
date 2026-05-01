@@ -1,0 +1,119 @@
+% ============================================================================
+% SMART BIN AGENT - SWMS
+% ============================================================================
+eventE([reset_bin]). % E - received from control_center
+
+:- dynamic bin_level/1, bin_state/1, hb_counter/1, started/0, last_reset_req/1, last_monitor_ts/1.
+
+bin_level(0). max_capacity(100). fill_step(20). bin_state(idle).
+shared_token(city_token_2026). deltaT(2). monitor_interval_ms(1000).
+
+even_args([reset_bin_in(_,_,_)]). % E - from control_center
+
+even(monitor(dummy)).
+even(start).
+even(monitor_tick).
+even(tick).
+even(maybe_fill).
+even(increase_level).
+even(full_trigger).
+even(retry_collection).
+even(handle_reset(_)).
+even(apply_reset_now).
+
+% --- Action predicates ---
+send_full_alertA(BinId, Token) :-
+    messageA(control_center, send_message(bin_full(BinId, Token), BinId), BinId).
+send_reset_ackA(BinId, ReqId, Token) :-
+    messageA(control_center, send_message(reset_ack(BinId, ReqId, Token), BinId), BinId).
+send_logA(Level, Event, Sender) :-
+    messageA(logger, send_message(log_in(Level, Event, Sender), Sender), Sender).
+send_full_alert_if_readyA(BinId, Token) :-
+    ( rd_noblock(agente_attivo(control_center, _)) ->
+        send_full_alertA(BinId, Token)
+    ; true
+    ).
+display_binA(BinId, Bp) :-
+    ( atom_concat(smart_bin, Nb, BinId) -> atom_concat(smartbin, Nb, Bp) ; Bp = BinId ).
+set_bin_stateA(State) :- retractall(bin_state(_)), assert(bin_state(State)).
+update_levelA(NL)     :- bin_level(L), retract(bin_level(L)), assert(bin_level(NL)).
+timestampA(Now)       :- statistics(walltime, [Now,_]).
+log_bin_startedA(Bp)  :- format('[~w] started~n', [Bp]).
+log_bin_readyA(Bp)    :- format('[~w] ready~n', [Bp]).
+log_level_pctA(Bp, NL) :- format('[~w] level = ~w%~n', [Bp, NL]).
+log_bin_fullA(Bp, L)  :- format('[~w] stage=full level = ~w% notify=control_center~n', [Bp, L]).
+log_bin_resetA(Bp)    :- format('[~w] stage=reset level = 0%~n', [Bp]).
+
+send_level_logA(BinId, NL) :-
+    display_binA(BinId, Bp),
+    format(atom(Msg), 'level_update  bin=~w level=~w%', [Bp, NL]),
+    messageA(logger, send_message(log_in(info, Msg, BinId), BinId), BinId).
+
+% --- Incoming message handler ---
+reset_bin_inI(Bin, ReqId, Token) :>
+    shared_token(Token), agent(Bin), evi(handle_reset(ReqId)).
+
+% --- Start ---
+startI :>
+    retractall(started), assert(started),
+    agent(BinId), display_binA(BinId, Bp), log_bin_startedA(Bp),
+    deltaT(D), retractall(hb_counter(_)), assert(hb_counter(D)),
+    retractall(last_reset_req(_)), retractall(last_monitor_ts(_)),
+    timestampA(Now), assert(last_monitor_ts(Now)), log_bin_readyA(Bp).
+
+% --- Reset handling ---
+handle_resetI(ReqId) :>
+    \+ last_reset_req(ReqId), !,
+    assert(last_reset_req(ReqId)), evi(apply_reset_now),
+    agent(BinId), shared_token(Token), send_reset_ackA(BinId, ReqId, Token).
+handle_resetI(_) :> true.
+
+apply_reset_nowI :>
+    update_levelA(0), set_bin_stateA(idle),
+    agent(BinId), display_binA(BinId, Bp), log_bin_resetA(Bp),
+    format(atom(RMsg), 'bin_reset  bin=~w', [Bp]),
+    send_logA(info, RMsg, BinId).
+
+% --- Fill cycle ---
+maybe_fillI :> bin_state(idle), evi(increase_level).
+
+increase_levelI :>
+    bin_level(L), max_capacity(M), L < M,
+    fill_step(S), NL is min(L+S, M),
+    update_levelA(NL),
+    agent(BinId), display_binA(BinId, Bp), log_level_pctA(Bp, NL),
+    send_level_logA(BinId, NL),
+    ( NL >= M -> evi(full_trigger) ; true ).
+
+full_triggerI :>
+    bin_state(idle), set_bin_stateA(waiting),
+    agent(BinId), display_binA(BinId, Bp), bin_level(L), log_bin_fullA(Bp, L),
+    shared_token(Token), send_full_alert_if_readyA(BinId, Token),
+    format(atom(FMsg), 'bin_full  bin=~w', [Bp]),
+    send_logA(warn, FMsg, BinId).
+
+retry_collectionI :>
+    agent(BinId), shared_token(Token), send_full_alert_if_readyA(BinId, Token).
+
+% --- Monitor ---
+monitor(dummy) :- evi(monitor(dummy)).
+monitorI(dummy) :>
+    timestampA(Now), last_monitor_ts(Last), monitor_interval_ms(Interval),
+    ( Now - Last < Interval -> true
+    ; retract(last_monitor_ts(Last)), assert(last_monitor_ts(Now)), evi(monitor_tick)
+    ).
+
+monitor_tickI :>
+    hb_counter(C), agent(_BinId),
+    ( C > 1 -> C1 is C-1, retract(hb_counter(C)), assert(hb_counter(C1))
+    ; C =:= 1 -> deltaT(D), retract(hb_counter(1)), assert(hb_counter(D)), evi(tick)
+    ; true
+    ).
+
+tickI :>
+    agent(BinId),
+    ( bin_state(waiting) -> evi(retry_collection)
+    ; bin_state(idle) -> evi(maybe_fill)
+    ).
+
+:- initialization(monitor(dummy)).

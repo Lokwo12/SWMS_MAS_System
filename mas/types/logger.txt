@@ -1,0 +1,52 @@
+% ============================================================================
+% LOGGER AGENT - SWMS
+% ============================================================================
+eventE([log_in,       % E - received from any agent
+        log_event_in]). % E - received from any agent
+
+:- dynamic log_store/4, started/0, recent_log/2.
+dedup_window_ms(1200).
+
+even_args([log_in(_,_,_),                    % E - from any agent
+           log_event_in(_,_,_,_,_,_,_)]). % E - from any agent
+
+even(monitor(dummy)).
+even(start).
+even(should_print(_,_,_,_)).
+even(print_log(_,_,_)).
+
+log_inI(Level, Event, Sender) :>
+    statistics(walltime, [T,_]),
+    assert(log_store(T, Sender, Event, Level)),
+    evi(should_print(k(Level, Sender, Event), Level, Sender, Event)).
+
+log_event_inI(Level, Name, ReqId, Bin, Truck, Note, Sender) :>
+    statistics(walltime, [T,_]),
+    assert(log_store(T, Sender, event(Name, req(ReqId), bin(Bin), truck(Truck), note(Note)), Level)),
+    ( atom_concat(smart_bin, N, Bin) -> atom_concat(smartbin, N, Bp) ; Bp = Bin ),
+    format(atom(Msg), '~w  req=~w bin=~w truck=~w note=~w', [Name, ReqId, Bp, Truck, Note]),
+    evi(should_print(k(Level, Sender, event(Name, ReqId, Bin, Truck, Note)), Level, Sender, Msg)).
+
+should_printI(Key, _Level, _Sender, _Msg) :>
+    statistics(walltime, [Now,_]),
+    dedup_window_ms(W), recent_log(Key, Prev), Now - Prev < W, !.
+should_printI(Key, Level, Sender, Msg) :>
+    statistics(walltime, [Now,_]),
+    retractall(recent_log(Key, _)), assert(recent_log(Key, Now)),
+    evi(print_log(Level, Sender, Msg)).
+
+print_logI(Level, _Sender, Msg) :>
+    ( Level = info -> Lvl = 'INFO' ; Level = warn -> Lvl = 'WARN' ;
+      Level = error -> Lvl = 'ERROR' ; Lvl = Level ),
+    format('[logger] ~w  ~w~n', [Lvl, Msg]).
+
+monitor(dummy) :- evi(monitor(dummy)).
+monitorI(dummy) :> \+ started, evi(start).
+monitorI(dummy) :> started, true.
+
+startI :>
+    retractall(started), assert(started),
+    retractall(log_store(_,_,_,_)), retractall(recent_log(_,_)),
+    format('[logger] started~n', []).
+
+:- initialization(monitor(dummy)).
