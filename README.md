@@ -67,8 +67,6 @@ awaiting_reply → awaiting_assign_ack → awaiting_completion → awaiting_rese
 
 ## Collection Protocol
 
-# Smart Waste Management System – Sequence Diagram
-
 ```mermaid
 sequenceDiagram
     participant Bin as SmartBin
@@ -258,6 +256,11 @@ Full GAIA-BASE agent design (roles, virtual organization, interaction model, eve
 ---
 
 ## License
+
+
+
+
+
 
 This project is developed for academic research purposes. See [`LICENSE`](LICENSE) for details.
 
