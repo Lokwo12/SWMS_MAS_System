@@ -6,8 +6,7 @@
 
 # Overview
 
-**SWMS** is a research-grade Multi-Agent System (MAS) that simulates and automates the complete lifecycle of urban waste collection. The system is composed of eight cooperative autonomous agents — smart bins, collection trucks, a central coordinator, and a logger — each running as an independent DALI agent with its own reactive and proactive logic.
-
+The Smart Waste Management System (SWMS) is a Multi-Agent System (MAS) built on the DALI agent platform. Its objective is to automate the urban waste collection process through the coordinated cooperation of autonomous agents.
 When a smart bin reaches maximum capacity, the system automatically:
 
 1. Detects the fill event and opens a tracked collection request
@@ -27,20 +26,8 @@ These fault-tolerance behaviours are implemented directly inside the DALI agent 
 
 ---
 
-<<<<<<< HEAD
-## 1. System Objective
+## System Objective
 
-The **Smart Waste Management System (SWMS)** is a Multi-Agent System (MAS) built on the DALI agent platform. Its objective is to automate the urban waste collection process through the coordinated cooperation of autonomous agents.
-
-## 2. Agent Roles and Virtual Organization
-
-### 2.1 Virtual Organization Overview
-
-The SWMS defines a hierarchical virtual organization with three functional layers:
-## Architecture
-=======
-# 1. System Objective
->>>>>>> 348004b (readme update)
 
 The **Smart Waste Management System (SWMS)** is a Multi-Agent System built on the DALI agent platform.
 
@@ -53,10 +40,22 @@ Its objective is to automate urban waste collection through coordinated cooperat
 - Maintaining structured event logging
 
 ---
+## 1.1 Agents Roles
 
-# 2. Agent Roles and Virtual Organization
+| Role | Description |
+|---|---|
+| **SmartBin** | A smart waste container that monitors its fill level. When full, it requests emptying. It can be reset to empty. |
+| **Truck** | A vehicle that can accept a pickup job, travel to the bin, collect the waste, and report completion. It may refuse jobs when busy. |
+| **ControlCenter** | The central coordinator that receives bin-full notifications, assigns a suitable truck, tracks the request through its lifecycle (reply, assignment, completion, reset), and handles timeouts and retries. |
+| **Logger** | A passive observer that records significant events (with deduplication) for audit and debugging. |
 
-## 2.1 Virtual Organization Overview
+
+# 1.2 Virtual Organization Overview
+
+- `Name:`Smart Waste Management System — SWMS
+- `Goal` The system monitors the fill level of distributed smart bins across a city. When a bin reaches maximum capacity, the system automatically orchestrates the dispatch of a collection truck, supervises the pickup lifecycle, and resets the bin to an operational state — without human intervention.
+- `Agents` SmartBin, controlcentre, garbagetruck, logger
+
 
 The SWMS architecture is organized into three functional layers.
 
@@ -116,161 +115,95 @@ awaiting_reply
 → awaiting_reset_ack
 ```
 
+## 1.3 Interaction model (protocols)
+
+| Initiator | Responder | Protocol | Purpose |
+|----|----|----|----|
+|SmartBin |ControlCenter| `NotifyFull`| SamrtBin signals it is full|
+|ControlCenter | Truck | `PickupRequest` |Ask a Truck to empty a Smartbin|
+|Truck | ControlCenter | `JobAccept` | Trucks Accept the job|
+|Truck | ControlCenter | `JobRefuse` | Truck Refuses |
+|ControlCenter | Truck | `Assignment` | Assign the job (After Accept).|
+|Truck| ControlCenter | `AssignmentAck`| Acknowledge aasignment.|
+|Truck | ControlCenter | `CollectionComplete`| Waste collected |
+|ControlCenter | Smartbin| `Reset` | Command Smartbin to empty itself|
+|SMartbin | ControlCenter | `ResetAck`| SmartBin confirms Reset|
+|Any Agent| Logger | `log`| Record an Event|
+
+## 1.4 Agent Event table.
+## 1.4.1 ControlCenter — Event Table
+| Event | Source | Trigger | Description |
+|---|---|---|---|
+| `bin_full(Bin, Token)` | SmartBin | Fill level = 100% | Bin requests collection; opens new request or resends assignment |
+| `job_accept(Truck, Bin, ReqId, Token)` | Truck | Truck accepts pickup | Triggers `assignment` dispatch; truck marked busy |
+| `job_refuse(Truck, Bin, ReqId, Token)` | Truck | Truck refuses pickup | Marks truck as tried; retries with next available truck |
+| `assignment_ack(Truck, Bin, ReqId, Token)` | Truck | Truck confirms assignment | Advances inflight stage to `awaiting_completion` |
+| `collection_complete(Bin, ReqId, Token)` | Truck | Truck finishes collection | Closes inflight record; sends `reset_bin` to SmartBin |
+| `reset_ack(Bin, ReqId, Token)` | SmartBin | Bin confirms reset | Fully closes the request lifecycle 
+
+**Core Lifecycle Events** *(internal protocol transitions)*
+
+| Event | Source | Trigger | Description |
+|---|---|---|---|
+| `handle_bin_full_new(Bin)` | Internal | No open request for Bin | Opens a new collection request; generates `ReqId` |
+| `handle_bin_full_retry(Bin, ReqId, T)` | Internal | Request already open | Resends `assignment` to the currently assigned truck |
+| `dispatch_bin_full(Bin, ReqId, T)` | Internal | After truck selected | Opens inflight record; sends `pickup_request` to truck |
+| `do_accept(Truck, Bin, ReqId)` | Internal | After `job_accept` | Sets truck busy; sends `assignment` |
+| `do_refuse(Truck, Bin, ReqId)` | Internal | After `job_refuse` | Records tried truck; selects next idle truck |
+| `do_ack(Truck, Bin, ReqId, R)` | Internal | After `assignment_ack` | Advances inflight stage |
+| `do_collect_complete(Bin, ReqId, Truck)` | Internal | After `collection_complete` | Sends `reset_bin`; marks request complete |
+| `do_reset_ack(Bin, ReqId, Truck)` | Internal | After `reset_ack` | Removes inflight record; request fully closed |
 
 # 3. Collection Workflow
-
 ```mermaid
 sequenceDiagram
     participant Bin as SmartBin
     participant CC as ControlCenter
-    participant Truck1 as Truck_First
-    participant Truck2 as Truck_Second
+    participant Truck1 as Truck (first)
+    participant Truck2 as Truck (second)
     participant Logger
-<<<<<<< HEAD
 
     Note over Bin: Periodically fills up
-
     Bin->>Bin: increase_level()
-
     alt Bin becomes full
-
-        Bin->>CC: bin_full(BinId Token)
-        Bin->>Logger: log(info bin_full BinId)
-
-        CC->>CC: generate ReqId and select idle truck
-
-        CC->>Truck1: pickup_request(BinId ReqId Token)
-
-        CC->>Logger: log(info pickup_request_sent ReqId BinId Truck1)
+        Bin->>CC: bin_full(BinId, Token)
+        Bin->>Logger: log(info, bin_full, BinId)
+        CC->>CC: generate ReqId, select idle truck
+        CC->>Truck1: pickup_request(BinId, ReqId, Token)
+        CC->>Logger: log(info, pickup_request_sent, ReqId, BinId, Truck1)
 
         alt Truck1 accepts
-
-            Truck1->>CC: job_accept(Truck1 BinId ReqId Token)
-
-            Truck1->>Logger: log(info pickup_accept BinId)
-
-            CC->>CC: update state to awaiting_assign_ack
-
-            CC->>Truck1: assignment(BinId ReqId Token)
-
-            Truck1->>CC: assignment_ack(Truck1 BinId ReqId Token)
-
-            CC->>CC: update state to awaiting_completion
-
-            Note over Truck1: move timer
-
-            Truck1->>Truck1: move for move_time ticks
-
-            Note over Truck1: collect timer
-
-            Truck1->>Truck1: collect for collect_time ticks
-
-            Truck1->>CC: collection_complete(BinId ReqId Token)
-
-            CC->>CC: update state to awaiting_reset_ack
-
-            CC->>Bin: reset_bin(BinId ReqId Token)
-
+            Truck1->>CC: job_accept(Truck1, BinId, ReqId, Token)
+            Truck1->>Logger: log(info, pickup_accept, BinId)
+            CC->>CC: update state → awaiting_assign_ack
+            CC->>Truck1: assignment(BinId, ReqId, Token)
+            Truck1->>CC: assignment_ack(Truck1, BinId, ReqId, Token)
+            CC->>CC: update state → awaiting_completion
+            Note over Truck1: move() timer
+            Truck1->>Truck1: move() for move_time ticks
+            Note over Truck1: collect() timer
+            Truck1->>Truck1: collect() for collect_time ticks
+            Truck1->>CC: collection_complete(BinId, ReqId, Token)
+            CC->>CC: update state → awaiting_reset_ack
+            CC->>Bin: reset_bin(BinId, ReqId, Token)
             Bin->>Bin: reset level to 0
-
-            Bin->>CC: reset_ack(BinId ReqId Token)
-
-            Bin->>Logger: log(info bin_reset BinId)
-
-            CC->>CC: close request and clear inflight
-
-            CC->>Logger: log(info request_closed ReqId BinId Truck1)
+            Bin->>CC: reset_ack(BinId, ReqId, Token)
+            Bin->>Logger: log(info, bin_reset, BinId)
+            CC->>CC: close request, clear inflight
+            CC->>Logger: log(info, request_closed, ReqId, BinId, Truck1)
 
         else Truck1 refuses
-
-            Truck1->>CC: job_refuse(Truck1 BinId ReqId Token)
-
-            CC->>CC: mark tried and retry
-
-            CC->>Truck2: pickup_request(BinId ReqId Token)
-
+            Truck1->>CC: job_refuse(Truck1, BinId, ReqId, Token)
+            CC->>CC: mark tried(BinId, Truck1), retry
+            CC->>Truck2: pickup_request(BinId, ReqId, Token)
             Note over Truck2: same accept flow as above
-
         end
     end
 
     Note over Logger: All log events are deduplicated within a time window
 ```
-=======
->>>>>>> 348004b (readme update)
-
-    Note over Bin: Bin periodically fills over time
-
-    Bin->>Bin: increase_level()
-
-    alt Bin becomes full
-
-        Bin->>CC: bin_full(BinId, Token)
-        Bin->>Logger: log(info, bin_full, BinId)
-
-        CC->>CC: generate ReqId and select idle truck
-
-        CC->>Truck1: pickup_request(BinId, ReqId, Token)
-
-        CC->>Logger: log(info, pickup_request_sent, ReqId, BinId, Truck1)
-
-        alt Truck1 accepts request
-
-            Truck1->>CC: job_accept(Truck1, BinId, ReqId, Token)
-
-            Truck1->>Logger: log(info, pickup_accept, BinId)
-
-            CC->>CC: update state to awaiting_assign_ack
-
-            CC->>Truck1: assignment(BinId, ReqId, Token)
-
-            Truck1->>CC: assignment_ack(Truck1, BinId, ReqId, Token)
-
-            CC->>CC: update state to awaiting_completion
-
-            Note over Truck1: Truck moves toward bin
-
-            Truck1->>Truck1: move for move_time ticks
-
-            Note over Truck1: Waste collection phase
-
-            Truck1->>Truck1: collect for collect_time ticks
-
-            Truck1->>CC: collection_complete(BinId, ReqId, Token)
-
-            CC->>CC: update state to awaiting_reset_ack
-
-            CC->>Bin: reset_bin(BinId, ReqId, Token)
-
-            Bin->>Bin: reset level to 0
-
-            Bin->>CC: reset_ack(BinId, ReqId, Token)
-
-            Bin->>Logger: log(info, bin_reset, BinId)
-
-            CC->>CC: close request and clear inflight state
-
-            CC->>Logger: log(info, request_closed, ReqId, BinId, Truck1)
-
-        else Truck1 refuses request
-
-            Truck1->>CC: job_refuse(Truck1, BinId, ReqId, Token)
-
-            CC->>CC: mark truck as tried
-
-            CC->>Truck2: pickup_request(BinId, ReqId, Token)
-
-            Note over Truck2: Retry collection using another truck
-
-        end
-    end
-
-    Note over Logger: Log events are deduplicated within a time window
-```
 
 
-
-<<<<<<< HEAD
 ## Key Features
 
 - **Fully autonomous operation** — no polling or human triggers required once started
