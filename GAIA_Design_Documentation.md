@@ -212,53 +212,84 @@ The SWMS defines a hierarchical virtual organization with three functional layer
 
 ## 3. Interaction Model
 
-### 3.1 Collection Protocol (Happy Path)
+### 3.1 Protocol Overview
+
+The system operates through four distinct protocols. Each row below identifies who initiates the exchange, who responds, what message is sent, and its purpose within the collection lifecycle.
+
+| Initiator | Responder | Protocol / Message | Description |
+|---|---|---|---|
+| SmartBin | ControlCenter | `bin_full(Bin, Token)` | Bin signals it is full; opens a new tracked collection request |
+| ControlCenter | Truck | `pickup_request(Bin, ReqId, Token)` | CC requests a truck to collect the named bin |
+| Truck | ControlCenter | `job_accept(Truck, Bin, ReqId, Token)` | Truck is idle; accepts the job |
+| Truck | ControlCenter | `job_refuse(Truck, Bin, ReqId, Token)` | Truck is busy; CC retries with the next available truck |
+| ControlCenter | Truck | `assignment(Bin, ReqId, Token)` | CC confirms the job after acceptance; truck starts moving |
+| Truck | ControlCenter | `assignment_ack(Truck, Bin, ReqId, Token)` | Truck acknowledges the assignment |
+| Truck | ControlCenter | `collection_complete(Bin, ReqId, Token)` | Truck reports waste collected; CC orders bin reset |
+| ControlCenter | SmartBin | `reset_bin(Bin, ReqId, Token)` | CC commands the bin to zero its fill level |
+| SmartBin | ControlCenter | `reset_ack(Bin, ReqId, Token)` | Bin confirms reset; request lifecycle fully closed |
+| Any agent | Logger | `log_in(Level, Msg, Sender)` | Free-text event log — fire-and-forget, deduplicated |
+| ControlCenter | Logger | `log_event_in(Level, Name, ReqId, Bin, Truck, Note, Sender)` | Structured lifecycle event record |
+
+---
+
+### 3.2 Collection Protocol (Happy Path)
 
 The primary interaction protocol governs the full lifecycle of a single waste collection request.
 
-```
-SmartBin          ControlCenter           Truck            SmartBin
-    │                   │                   │                  │
-    │──bin_full(B,Tok)──▶│                  │                  │
-    │                   │                   │                  │
-    │                   │──pickup_request(B,ReqId,Tok)──▶│     │
-    │                   │                   │                  │
-    │                   │◀──job_accept(Tr,B,ReqId,Tok)───│     │
-    │                   │                   │                  │
-    │                   │──assignment(B,ReqId,Tok)───────▶│    │
-    │                   │                   │                  │
-    │                   │◀─assignment_ack(Tr,B,ReqId,Tok)─│    │
-    │                   │                   │                  │
-    │                   │      [Truck moves to bin, collects]  │
-    │                   │                   │                  │
-    │                   │◀─collection_complete(B,ReqId,Tok)─│  │
-    │                   │                   │                  │
-    │                   │──────────reset_bin(B,ReqId,Tok)──────▶│
-    │                   │                   │                  │
-    │                   │◀──────────reset_ack(B,ReqId,Tok)─────│
-    │                   │                   │                  │
-    ║ [cycle closed]    ║                   ║                  ║
-```
+```mermaid
+sequenceDiagram
+    participant Bin as SmartBin
+    participant CC as ControlCenter
+    participant Tr as Truck
+    participant Log as Logger
 
-### 3.2 Refuse & Retry Protocol
+    Note over Bin: fill_step increments every deltaT seconds
+    Bin->>CC: bin_full(Bin, Token)
+    CC->>Log: log_event_in(info, bin_full_received, ReqId, Bin, -, -)
 
-When a truck is busy, the control center retries with the next available truck.
+    CC->>Tr: pickup_request(Bin, ReqId, Token)
+    CC->>Log: log_event_in(info, pickup_request_sent, ReqId, Bin, Truck, -)
 
-```
-ControlCenter           Truck-A            Truck-B
-    │                     │                  │
-    │──pickup_request──▶  │                  │
-    │                     │                  │
-    │◀──job_refuse──────  │                  │
-    │                     │                  │
-    │──pickup_request────────────────────▶   │
-    │                     │                  │
-    │◀──job_accept──────────────────────── │  │
-    │                     │                  │
-    │ (continues with assignment protocol)   │
+    Tr->>CC: job_accept(Truck, Bin, ReqId, Token)
+    CC->>Log: log_event_in(info, pickup_accepted, ReqId, Bin, Truck, -)
+
+    CC->>Tr: assignment(Bin, ReqId, Token)
+    Tr->>CC: assignment_ack(Truck, Bin, ReqId, Token)
+    CC->>Log: log_event_in(info, assignment_acked, ReqId, Bin, Truck, -)
+
+    Note over Tr: move_time ticks (state = moving)
+    Note over Tr: collect_time ticks (state = collecting)
+
+    Tr->>CC: collection_complete(Bin, ReqId, Token)
+    CC->>Log: log_event_in(info, collection_complete, ReqId, Bin, Truck, -)
+
+    CC->>Bin: reset_bin(Bin, ReqId, Token)
+    Bin->>CC: reset_ack(Bin, ReqId, Token)
+    CC->>Log: log_event_in(info, reset_acked, ReqId, Bin, Truck, -)
+
+    Note over CC: Request lifecycle closed
 ```
 
-### 3.3 Timeout & Retry Protocol
+### 3.3 Refuse & Retry Protocol
+
+When a truck is busy, the control center marks it as tried and retries with the next available truck.
+
+```mermaid
+sequenceDiagram
+    participant CC as ControlCenter
+    participant TrA as Truck-A (busy)
+    participant TrB as Truck-B (idle)
+
+    CC->>TrA: pickup_request(Bin, ReqId, Token)
+    TrA->>CC: job_refuse(Truck-A, Bin, ReqId, Token)
+    Note over CC: mark tried(Bin, Truck-A) → select next truck
+
+    CC->>TrB: pickup_request(Bin, ReqId, Token)
+    TrB->>CC: job_accept(Truck-B, Bin, ReqId, Token)
+    Note over CC: continues with assignment protocol (§ 3.2)
+```
+
+### 3.4 Timeout & Retry Protocol
 
 Each inflight stage is guarded by a TTL counter decremented on each ControlCenter cycle:
 
@@ -266,19 +297,21 @@ Each inflight stage is guarded by a TTL counter decremented on each ControlCente
 |---|---|---|---|
 | `awaiting_reply` | `reply_ttl` | 6 cycles | Re-dispatch to another truck |
 | `awaiting_assign_ack` | `assign_ack_ttl` | 6 cycles | Resend `assignment` |
-| `awaiting_completion` | `completion_ttl` | 10 cycles | Log & close (truck lost) |
+| `awaiting_completion` | `completion_ttl` | 10 cycles | Log & close (truck considered lost) |
 | `awaiting_reset_ack` | `reset_ack_ttl` | 3 cycles | Resend `reset_bin` |
 
-### 3.4 Logging Protocol
+### 3.5 Logging Protocol
 
 Any agent may emit log entries directly to the Logger at any time (fire-and-forget):
 
-```
-AnyAgent                Logger
-   │                      │
-   │──log_in(Level, Msg, Sender)──▶│
-   │                      │  (dedup check)
-   │                      │  (persist + print)
+```mermaid
+sequenceDiagram
+    participant A as Any Agent
+    participant Log as Logger
+
+    A->>Log: log_in(Level, Msg, Sender)
+    Note over Log: dedup check (1.2 s sliding window)
+    Note over Log: persist to log_store + print to stdout
 ```
 
 ---
