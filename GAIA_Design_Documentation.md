@@ -285,186 +285,279 @@ AnyAgent                Logger
 
 ## 4. Event Table
 
+> **Reading guide** — Events are grouped by origin and role:
+> - **External Events** are messages received from other agents — these are the primary protocol drivers.
+> - **Core Lifecycle Events** are the internal transitions that implement the protocol logic.
+> - **Timeout & Recovery Events** implement TTL-based fault tolerance.
+> - **Cyclic & Init Events** are heartbeat and startup mechanics.
+
+---
+
 ### 4.1 ControlCenter — Event Table
+
+**External Events** *(received from other agents — primary protocol drivers)*
 
 | Event | Source | Trigger | Description |
 |---|---|---|---|
-| `start` | Internal | System init | Initializes KB, truck states, request counter |
-| `monitor(dummy)` | Internal (cyclic) | Every tick | Heartbeat; triggers cycle if interval elapsed |
-| `cycle` | Internal | Per cycle | Fires `process_timeouts` and `cycle_completed` |
-| `bin_full(Bin, Token)` | SmartBin | Fill level = 100% | Alerts that a bin requires collection |
-| `handle_bin_full(Bin)` | Internal | On `bin_full` receipt | Routes to new-request or retry handler |
-| `route_bin_full(Bin)` | Internal | After `handle_bin_full` | Selects new vs. retry path |
-| `handle_bin_full_new(Bin)` | Internal | No open request for Bin | Opens a new collection request |
-| `handle_bin_full_retry(Bin,ReqId,T)` | Internal | Request already open | Resends `assignment` to the current truck |
-| `select_truck(ReqId, Bin)` | Internal | After new request opened | Selects the best idle truck candidate |
-| `dispatch_bin_full(Bin,ReqId,T)` | Internal | After truck selected | Opens inflight record, sends `pickup_request` |
-| `job_accept(Truck,Bin,ReqId,Token)` | Truck | Truck accepts pickup | Triggers assignment dispatch |
-| `do_accept(Truck,Bin,ReqId)` | Internal | After `job_accept` | Sets truck busy, sends `assignment` |
-| `job_refuse(Truck,Bin,ReqId,Token)` | Truck | Truck refuses pickup | Triggers retry with another truck |
-| `do_refuse(Truck,Bin,ReqId)` | Internal | After `job_refuse` | Marks truck tried, selects next truck |
-| `assignment_ack(Truck,Bin,ReqId,Token)` | Truck | Truck confirms assignment | Advances stage to `awaiting_completion` |
-| `do_ack(Truck,Bin,ReqId,R)` | Internal | After `assignment_ack` | Updates inflight stage |
-| `collection_complete(Bin,ReqId,Token)` | Truck | Truck finishes collection | Triggers bin reset |
-| `do_collect_complete(Bin,ReqId,Truck)` | Internal | After `collection_complete` | Sends `reset_bin`, marks request complete |
-| `reset_ack(Bin,ReqId,Token)` | SmartBin | Bin confirms reset | Closes the full request lifecycle |
-| `do_reset_ack(Bin,ReqId,Truck)` | Internal | After `reset_ack` | Closes inflight record |
-| `process_timeouts` | Internal | Per cycle | Scans all inflight records for TTL expiry |
-| `timeout_step(ReqId,Bin,T,Stage,Ttl,R)` | Internal | Per inflight record | Decrements TTL or fires timeout handler |
-| `reply_timeout_step(ReqId,Bin,T)` | Internal | TTL=0 at `awaiting_reply` | Re-dispatches to next truck |
-| `assign_ack_timeout_step(ReqId,Bin,T,R)` | Internal | TTL=0 at `awaiting_assign_ack` | Resends `assignment` |
-| `completion_timeout_step(ReqId,Bin,T)` | Internal | TTL=0 at `awaiting_completion` | Closes stale request |
-| `reset_ack_timeout_step(ReqId,Bin,T)` | Internal | TTL=0 at `awaiting_reset_ack` | Resends `reset_bin` |
-| `truck_idle(Truck)` | Internal | Truck freed | Updates truck state to idle |
-| `truck_busy(Truck)` | Internal | Truck assigned | Updates truck state to busy |
-| `watchdog_check` | Internal | Cyclic | Health monitoring |
+| `bin_full(Bin, Token)` | SmartBin | Fill level = 100% | Bin requests collection; opens new request or resends assignment |
+| `job_accept(Truck, Bin, ReqId, Token)` | Truck | Truck accepts pickup | Triggers `assignment` dispatch; truck marked busy |
+| `job_refuse(Truck, Bin, ReqId, Token)` | Truck | Truck refuses pickup | Marks truck as tried; retries with next available truck |
+| `assignment_ack(Truck, Bin, ReqId, Token)` | Truck | Truck confirms assignment | Advances inflight stage to `awaiting_completion` |
+| `collection_complete(Bin, ReqId, Token)` | Truck | Truck finishes collection | Closes inflight record; sends `reset_bin` to SmartBin |
+| `reset_ack(Bin, ReqId, Token)` | SmartBin | Bin confirms reset | Fully closes the request lifecycle |
+
+**Core Lifecycle Events** *(internal protocol transitions)*
+
+| Event | Source | Trigger | Description |
+|---|---|---|---|
+| `handle_bin_full_new(Bin)` | Internal | No open request for Bin | Opens a new collection request; generates `ReqId` |
+| `handle_bin_full_retry(Bin, ReqId, T)` | Internal | Request already open | Resends `assignment` to the currently assigned truck |
+| `dispatch_bin_full(Bin, ReqId, T)` | Internal | After truck selected | Opens inflight record; sends `pickup_request` to truck |
+| `do_accept(Truck, Bin, ReqId)` | Internal | After `job_accept` | Sets truck busy; sends `assignment` |
+| `do_refuse(Truck, Bin, ReqId)` | Internal | After `job_refuse` | Records tried truck; selects next idle truck |
+| `do_ack(Truck, Bin, ReqId, R)` | Internal | After `assignment_ack` | Advances inflight stage |
+| `do_collect_complete(Bin, ReqId, Truck)` | Internal | After `collection_complete` | Sends `reset_bin`; marks request complete |
+| `do_reset_ack(Bin, ReqId, Truck)` | Internal | After `reset_ack` | Removes inflight record; request fully closed |
+
+**Timeout & Recovery Events** *(TTL-based fault tolerance)*
+
+| Event | Source | Trigger | Description |
+|---|---|---|---|
+| `process_timeouts` | Internal (cyclic) | Every cycle | Scans all inflight records; decrements TTL counters |
+| `reply_timeout_step(ReqId, Bin, T)` | Internal | TTL = 0 at `awaiting_reply` | Re-dispatches pickup request to the next available truck |
+| `assign_ack_timeout_step(ReqId, Bin, T, R)` | Internal | TTL = 0 at `awaiting_assign_ack` | Resends `assignment` to the selected truck |
+| `completion_timeout_step(ReqId, Bin, T)` | Internal | TTL = 0 at `awaiting_completion` | Logs and closes the stale request (truck considered lost) |
+| `reset_ack_timeout_step(ReqId, Bin, T)` | Internal | TTL = 0 at `awaiting_reset_ack` | Resends `reset_bin` to the SmartBin |
+
+**Cyclic & Initialization Events**
+
+| Event | Source | Trigger | Description |
+|---|---|---|---|
+| `start` | Internal | System init | Initializes KB, truck states, and request sequence counter |
+| `monitor(dummy)` | Internal | Every tick | Heartbeat; triggers `cycle` if interval elapsed |
+| `cycle` | Internal | Per cycle | Fires `process_timeouts`; advances cyclic supervision logic |
 
 ---
 
 ### 4.2 Truck — Event Table
 
+**External Events** *(received from ControlCenter — primary protocol drivers)*
+
 | Event | Source | Trigger | Description |
 |---|---|---|---|
-| `start` | Internal | System init | Initializes local state, sets idle |
-| `monitor(dummy)` | Internal (cyclic) | Every tick | Heartbeat; fires `monitor_tick` if interval elapsed |
-| `monitor_tick` | Internal | Per tick | Triggers all tick sub-events |
-| `pickup_request(Bin,ReqId,Token)` | ControlCenter | CC sends pickup_request | External message received |
-| `handle_pickup_request(Bin,ReqId)` | Internal | After `pickup_request` | Guards on truck state, routes to accept/refuse |
-| `accept_request(Bin,ReqId)` | Internal | Truck is idle | Sends `job_accept` to ControlCenter |
-| `refuse_request(Bin,ReqId)` | Internal | Truck is busy | Sends `job_refuse` to ControlCenter |
-| `assignment(Bin,ReqId,Token)` | ControlCenter | CC confirms assignment | External message received |
-| `handle_assignment(Bin,ReqId)` | Internal | After `assignment` | Idempotency check, starts move |
-| `start_move(Bin,ReqId)` | Internal | Assignment accepted | Arms move counter, sets state `moving` |
-| `tick_status_counter` | Internal | Per monitor tick | Periodic status reporting |
-| `tick_assignment_wait` | Internal | Per monitor tick | Counts down assignment wait window |
-| `tick_move_phase` | Internal | Per monitor tick | Counts down move time; on zero → collecting |
-| `tick_collect_phase` | Internal | Per monitor tick | Counts down collect time; on zero → success |
-| `success(Bin,ReqId)` | Internal | Collection done | Sends `collection_complete`, returns to idle |
-| `do_refuse(Bin,ReqId)` | Internal | Refuse path | Sends `job_refuse` to ControlCenter |
-| `assignment_timeout` | Internal | Assignment wait limit expired | Self-refuses if assignment never arrives |
-| `cleanup` | Internal | After timeout | Resets all counters, sets idle |
-| `status_check` | Internal | Cyclic | Logs current status |
+| `pickup_request(Bin, ReqId, Token)` | ControlCenter | CC assigns a collection job | Guards on truck state; routes to accept or refuse |
+| `assignment(Bin, ReqId, Token)` | ControlCenter | CC confirms the assignment | Idempotency check; starts the move phase |
+
+**Core Lifecycle Events** *(internal protocol transitions)*
+
+| Event | Source | Trigger | Description |
+|---|---|---|---|
+| `accept_request(Bin, ReqId)` | Internal | Truck is idle | Sends `job_accept` to ControlCenter |
+| `refuse_request(Bin, ReqId)` | Internal | Truck is busy | Sends `job_refuse` to ControlCenter |
+| `handle_assignment(Bin, ReqId)` | Internal | After `assignment` received | Idempotency check; triggers `start_move` |
+| `start_move(Bin, ReqId)` | Internal | Assignment accepted | Arms move counter; sets state to `moving` |
+| `tick_move_phase` | Internal (cyclic) | Each monitor tick while `moving` | Decrements move counter; transitions to `collecting` on zero |
+| `tick_collect_phase` | Internal (cyclic) | Each monitor tick while `collecting` | Decrements collect counter; fires `success` on zero |
+| `success(Bin, ReqId)` | Internal | Collection done | Sends `collection_complete` to ControlCenter; returns to `idle` |
+| `assignment_timeout` | Internal | Assignment wait limit expired | Self-refuses if no assignment arrives after accepting |
+| `cleanup` | Internal | After timeout or reset | Resets all counters; sets truck to `idle` |
+
+**Cyclic & Initialization Events**
+
+| Event | Source | Trigger | Description |
+|---|---|---|---|
+| `start` | Internal | System init | Initializes local state; sets truck to `idle` |
+| `monitor(dummy)` | Internal | Every tick | Heartbeat; fires `monitor_tick` if interval elapsed |
+| `monitor_tick` | Internal | Per tick | Dispatches all tick sub-events (move, collect, assignment wait) |
 
 ---
 
 ### 4.3 SmartBin — Event Table
 
+**External Events** *(received from ControlCenter)*
+
 | Event | Source | Trigger | Description |
 |---|---|---|---|
-| `start` | Internal | System init | Initializes level=0, state=idle, heartbeat counter |
-| `monitor(dummy)` | Internal (cyclic) | Every tick | Heartbeat; fires `monitor_tick` if interval elapsed |
-| `monitor_tick` | Internal | Per deltaT seconds | Fires `tick` |
-| `tick` | Internal | Per heartbeat | Dispatches `maybe_fill` or `retry_collection` based on state |
-| `maybe_fill` | Internal | State = idle | Triggers level increment |
-| `increase_level` | Internal | Bin level < 100% | Increments level by fill_step (20%) |
-| `full_trigger` | Internal | Level reaches 100% | Sets state to `waiting`, sends `bin_full` alert |
-| `retry_collection` | Internal | State = waiting on tick | Resends `bin_full` to ControlCenter |
-| `reset_bin(Bin,ReqId,Token)` | ControlCenter | CC orders reset after collection | External message received |
-| `handle_reset(ReqId)` | Internal | After `reset_bin` | Idempotency-guarded reset dispatcher |
-| `apply_reset_now` | Internal | First reset for this ReqId | Zeroes level, sets state to `idle`, sends `reset_ack` |
+| `reset_bin(Bin, ReqId, Token)` | ControlCenter | CC orders reset after collection | Triggers idempotency-guarded reset handler |
+
+**Core Lifecycle Events** *(internal fill and alert transitions)*
+
+| Event | Source | Trigger | Description |
+|---|---|---|---|
+| `maybe_fill` | Internal | State = `idle` on tick | Triggers level increment |
+| `increase_level` | Internal | Bin level < 100% | Increments `bin_level` by `fill_step` (20%) |
+| `full_trigger` | Internal | Level reaches 100% | Sets state to `waiting`; sends `bin_full` to ControlCenter |
+| `retry_collection` | Internal (cyclic) | State = `waiting` on tick | Resends `bin_full` if no reset has arrived |
+| `handle_reset(ReqId)` | Internal | After `reset_bin` received | Idempotency-guarded reset dispatcher |
+| `apply_reset_now` | Internal | First reset for this `ReqId` | Zeroes level; sets state to `idle`; sends `reset_ack` |
+
+**Cyclic & Initialization Events**
+
+| Event | Source | Trigger | Description |
+|---|---|---|---|
+| `start` | Internal | System init | Initializes `level = 0`, `state = idle`, heartbeat counter |
+| `monitor(dummy)` | Internal | Every tick | Heartbeat; fires `monitor_tick` if interval elapsed |
+| `monitor_tick` | Internal | Per `deltaT` seconds | Routes to `maybe_fill` (idle) or `retry_collection` (waiting) |
 
 ---
 
 ### 4.4 Logger — Event Table
 
+**External Events** *(received from any agent — primary entry points)*
+
 | Event | Source | Trigger | Description |
 |---|---|---|---|
+| `log_in(Level, Event, Sender)` | Any agent | Any agent logs text | Dedup-checked; persists and prints a free-text log entry |
+| `log_event_in(Level, Name, ReqId, Bin, Truck, Note, Sender)` | ControlCenter | Structured lifecycle event | Dedup-checked; persists and prints a structured event entry |
+
+**Internal Events**
+
+| Event | Source | Trigger | Description |
+|---|---|---|---|
+| `should_print(Key, Level, Sender, Msg)` | Internal | After every log event | Deduplication gate; suppresses if same key seen within 1.2 s |
+| `print_log(Level, Sender, Msg)` | Internal | After dedup pass | Formats and writes the log line to stdout |
 | `start` | Internal | System init | Clears log store and dedup cache |
-| `monitor(dummy)` | Internal | Heartbeat | Fires `start` if not yet started |
-| `log_in(Level,Event,Sender)` | Any agent | Any agent logs text | Persists and prints a free-text log entry |
-| `log_event_in(Level,Name,ReqId,Bin,Truck,Note,Sender)` | ControlCenter | Structured lifecycle event | Persists and prints a structured event log entry |
-| `should_print(Key,Level,Sender,Msg)` | Internal | After log_in / log_event_in | Deduplication check; suppresses if same key seen within 1.2 s |
-| `print_log(Level,Sender,Msg)` | Internal | After dedup pass | Formats and writes log line to stdout |
+| `monitor(dummy)` | Internal | Heartbeat | Fires `start` if not yet initialized |
 
 ---
 
 ## 5. Action Table
 
+> **Reading guide** — Actions are grouped by type:
+> - **Outgoing Messages** are the primary inter-agent communication actions.
+> - **State Management** covers all knowledge-base read/write operations.
+> - **Utilities** covers helper predicates (timestamps, formatting, logging helpers).
+
+---
+
 ### 5.1 ControlCenter — Action Table
 
-| Action | Type | Effect |
+**Outgoing Messages** *(inter-agent communication)*
+
+| Action | Sent To | Message Emitted |
 |---|---|---|
-| `send_pickup_requestA(Truck,Bin,ReqId,Token)` | Message | Sends `pickup_request(Bin,ReqId,Token)` to Truck |
-| `send_assignmentA(Truck,Bin,ReqId,Token)` | Message | Sends `assignment(Bin,ReqId,Token)` to Truck |
-| `send_resetA(Bin,ReqId,Token)` | Message | Sends `reset_bin(Bin,ReqId,Token)` to SmartBin |
-| `send_logA(Level,Event,Sender)` | Message | Sends free-text log entry to Logger |
-| `send_log_eventA(Level,Name,ReqId,Bin,Truck,Note)` | Message | Sends structured lifecycle event to Logger |
-| `set_truck_idleA(Truck)` | State | Retracts and reasserts `truck_state(Truck, idle)` |
-| `set_truck_busyA(Truck)` | State | Retracts and reasserts `truck_state(Truck, busy)` |
-| `open_inflightA(ReqId,Bin,T,Stage,Ttl)` | State | Creates new inflight record for a request stage |
-| `close_inflightA(ReqId,Bin,T)` | State | Removes inflight record when stage completes or fails |
-| `mark_repliedA(Req,Truck,Result)` | State | Records truck reply (accept/refuse) to prevent duplicates |
-| `assert_triedA(Bin,Truck)` | State | Marks a truck as already tried for a bin request |
-| `clear_tried_binA(Bin)` | State | Clears tried-truck history for a bin (on success) |
-| `assert_handled_binA(Bin)` | State | Prevents duplicate handling of same bin_full alert |
-| `complete_reqA(ReqId)` | State | Marks a request as completed |
-| `generate_req_idA(ReqId)` | State | Atomically increments and returns the request sequence counter |
-| `ensure_runtime_stateA` | State | Lazy-initialises req_seq and truck_state if absent |
-| `timestampA(Now)` | Utility | Reads current walltime in ms |
-| `display_binA(Bin,Bp)` | Utility | Converts `smart_binN` to display form `smartbinN` |
-| `log_cc_startA` | Log | Prints control center startup message |
-| `log_bin_full_newA(Bp)` | Log | Prints bin_full_received stage message |
-| `log_retry_assignA(ReqId,T,Bp)` | Log | Prints retry_assignment stage message |
-| `log_pickup_acceptedA(ReqId,Truck,Bp)` | Log | Prints pickup_accepted stage message |
-| `log_pickup_refusedA(ReqId,Truck,Bp)` | Log | Prints pickup_refused stage message |
-| `log_assign_ackedA(ReqId,Truck,Bp)` | Log | Prints assignment_acked stage message |
-| `log_collection_completeA(ReqId,Truck,Bp)` | Log | Prints collection_complete stage message |
-| `log_reset_ackedA(ReqId,Truck,Bp)` | Log | Prints reset_acked stage message |
-| `log_pickup_sentA(ReqId,T,Bp)` | Log | Prints pickup_request_sent stage message |
+| `send_pickup_requestA(Truck, Bin, ReqId, Token)` | Truck | `pickup_request(Bin, ReqId, Token)` |
+| `send_assignmentA(Truck, Bin, ReqId, Token)` | Truck | `assignment(Bin, ReqId, Token)` |
+| `send_resetA(Bin, ReqId, Token)` | SmartBin | `reset_bin(Bin, ReqId, Token)` |
+| `send_logA(Level, Event, Sender)` | Logger | Free-text log entry |
+| `send_log_eventA(Level, Name, ReqId, Bin, Truck, Note)` | Logger | Structured lifecycle event |
+
+**State Management** *(knowledge base operations)*
+
+| Action | Effect |
+|---|---|
+| `set_truck_idleA(Truck)` | Retracts and reasserts `truck_state(Truck, idle)` |
+| `set_truck_busyA(Truck)` | Retracts and reasserts `truck_state(Truck, busy)` |
+| `open_inflightA(ReqId, Bin, T, Stage, Ttl)` | Creates a new inflight record for the given request stage |
+| `close_inflightA(ReqId, Bin, T)` | Removes inflight record on stage completion or failure |
+| `mark_repliedA(Req, Truck, Result)` | Records truck reply (accept/refuse) to prevent duplicate processing |
+| `assert_triedA(Bin, Truck)` | Marks a truck as already tried for this bin request |
+| `clear_tried_binA(Bin)` | Clears tried-truck history for a bin on successful completion |
+| `assert_handled_binA(Bin)` | Prevents duplicate handling of the same `bin_full` alert |
+| `complete_reqA(ReqId)` | Marks a request as fully completed |
+| `generate_req_idA(ReqId)` | Atomically increments and returns the request sequence counter |
+| `ensure_runtime_stateA` | Lazy-initialises `req_seq` and `truck_state` facts if absent |
+
+**Utilities**
+
+| Action | Effect |
+|---|---|
+| `timestampA(Now)` | Reads current walltime in milliseconds |
+| `display_binA(Bin, Bp)` | Converts `smart_binN` to display form `smartbinN` |
+| `log_cc_startA` | Prints control center startup banner |
+| `log_bin_full_newA(Bp)` | Prints `stage=bin_full_received` message |
+| `log_pickup_sentA(ReqId, T, Bp)` | Prints `stage=pickup_request_sent` message |
+| `log_pickup_acceptedA(ReqId, Truck, Bp)` | Prints `stage=pickup_accepted` message |
+| `log_pickup_refusedA(ReqId, Truck, Bp)` | Prints `stage=pickup_refused` message |
+| `log_retry_assignA(ReqId, T, Bp)` | Prints `stage=retry_assignment` message |
+| `log_assign_ackedA(ReqId, Truck, Bp)` | Prints `stage=assignment_acked` message |
+| `log_collection_completeA(ReqId, Truck, Bp)` | Prints `stage=collection_complete` message |
+| `log_reset_ackedA(ReqId, Truck, Bp)` | Prints `stage=reset_acked` message |
 
 ---
 
 ### 5.2 Truck — Action Table
 
-| Action | Type | Effect |
+**Outgoing Messages** *(inter-agent communication)*
+
+| Action | Sent To | Message Emitted |
 |---|---|---|
-| `send_acceptA(Bin,ReqId,Token)` | Message | Sends `job_accept(Truck,Bin,ReqId,Token)` to ControlCenter |
-| `send_refuseA(Bin,ReqId,Token)` | Message | Sends `job_refuse(Truck,Bin,ReqId,Token)` to ControlCenter |
-| `send_assignment_ackA(Bin,ReqId,Token)` | Message | Sends `assignment_ack(Truck,Bin,ReqId,Token)` to ControlCenter |
-| `send_completionA(Bin,ReqId,Token)` | Message | Sends `collection_complete(Bin,ReqId,Token)` to ControlCenter |
-| `set_idleA` | State | Retracts all `truck_state(_)` facts and asserts `truck_state(idle)` |
-| `set_stateA(State)` | State | Transitions truck state to any given state (`idle`, `waiting_assignment`, `moving`, `collecting`) |
-| `timestampA(Now)` | Utility | Reads current walltime in ms |
-| `display_binA(Bin,Bp)` | Utility | Converts `smart_binN` to display form `smartbinN` |
-| `log_pickup_acceptA(Truck,Bp)` | Log | Prints `stage=pickup_accept` message |
-| `log_pickup_refuseA(Truck,Bp)` | Log | Prints `stage=pickup_refuse` message |
-| `log_move_toA(Truck,Bp,M)` | Log | Prints `stage=move_to_bin` with ETA |
-| `log_collect_wasteA(Truck,Bp,Ct)` | Log | Prints `stage=collect_waste` with ETA |
-| `log_report_completeA(Truck,Bp)` | Log | Prints `stage=report_completion` message |
-| `log_startedA(Truck)` | Log | Prints truck startup message |
+| `send_acceptA(Bin, ReqId, Token)` | ControlCenter | `job_accept(Truck, Bin, ReqId, Token)` |
+| `send_refuseA(Bin, ReqId, Token)` | ControlCenter | `job_refuse(Truck, Bin, ReqId, Token)` |
+| `send_assignment_ackA(Bin, ReqId, Token)` | ControlCenter | `assignment_ack(Truck, Bin, ReqId, Token)` |
+| `send_completionA(Bin, ReqId, Token)` | ControlCenter | `collection_complete(Bin, ReqId, Token)` |
+
+**State Management** *(knowledge base operations)*
+
+| Action | Effect |
+|---|---|
+| `set_idleA` | Retracts all `truck_state(_)` facts; asserts `truck_state(idle)` |
+| `set_stateA(State)` | Transitions truck to given state: `idle` / `waiting_assignment` / `moving` / `collecting` |
+
+**Utilities**
+
+| Action | Effect |
+|---|---|
+| `timestampA(Now)` | Reads current walltime in milliseconds |
+| `display_binA(Bin, Bp)` | Converts `smart_binN` to display form `smartbinN` |
+| `log_startedA(Truck)` | Prints truck startup banner |
+| `log_pickup_acceptA(Truck, Bp)` | Prints `stage=pickup_accept` message |
+| `log_pickup_refuseA(Truck, Bp)` | Prints `stage=pickup_refuse` message |
+| `log_move_toA(Truck, Bp, M)` | Prints `stage=move_to_bin` with move-time ETA |
+| `log_collect_wasteA(Truck, Bp, Ct)` | Prints `stage=collect_waste` with collect-time ETA |
+| `log_report_completeA(Truck, Bp)` | Prints `stage=report_completion` message |
 
 ---
 
 ### 5.3 SmartBin — Action Table
 
-| Action | Type | Effect |
+**Outgoing Messages** *(inter-agent communication)*
+
+| Action | Sent To | Message Emitted |
 |---|---|---|
-| `send_full_alertA(BinId,Token)` | Message | Sends `bin_full(BinId,Token)` to ControlCenter |
-| `send_full_alert_if_readyA(BinId,Token)` | Message | Sends `bin_full` only if ControlCenter is active (non-blocking check) |
-| `send_reset_ackA(BinId,ReqId,Token)` | Message | Sends `reset_ack(BinId,ReqId,Token)` to ControlCenter |
-| `send_logA(Level,Event,Sender)` | Message | Sends free-text log entry to Logger |
-| `send_level_logA(BinId,NL)` | Message | Sends formatted level-update log to Logger |
-| `set_bin_stateA(State)` | State | Transitions bin state (`idle` / `waiting`) |
-| `update_levelA(NL)` | State | Replaces current `bin_level` fact with new level value |
-| `timestampA(Now)` | Utility | Reads current walltime in ms |
-| `display_binA(BinId,Bp)` | Utility | Converts `smart_binN` to display form `smartbinN` |
-| `log_bin_startedA(Bp)` | Log | Prints bin startup message |
-| `log_bin_readyA(Bp)` | Log | Prints bin ready message |
-| `log_level_pctA(Bp,NL)` | Log | Prints current fill level percentage |
-| `log_bin_fullA(Bp,L)` | Log | Prints `stage=full` with current level and notify target |
-| `log_bin_resetA(Bp)` | Log | Prints `stage=reset level=0%` message |
+| `send_full_alertA(BinId, Token)` | ControlCenter | `bin_full(BinId, Token)` |
+| `send_full_alert_if_readyA(BinId, Token)` | ControlCenter | `bin_full(BinId, Token)` — only if CC is reachable (non-blocking) |
+| `send_reset_ackA(BinId, ReqId, Token)` | ControlCenter | `reset_ack(BinId, ReqId, Token)` |
+| `send_logA(Level, Event, Sender)` | Logger | Free-text log entry |
+| `send_level_logA(BinId, NL)` | Logger | Formatted fill-level update entry |
+
+**State Management** *(knowledge base operations)*
+
+| Action | Effect |
+|---|---|
+| `set_bin_stateA(State)` | Transitions bin state: `idle` ↔ `waiting` |
+| `update_levelA(NL)` | Replaces current `bin_level` fact with new level value |
+
+**Utilities**
+
+| Action | Effect |
+|---|---|
+| `timestampA(Now)` | Reads current walltime in milliseconds |
+| `display_binA(BinId, Bp)` | Converts `smart_binN` to display form `smartbinN` |
+| `log_bin_startedA(Bp)` | Prints bin startup banner |
+| `log_bin_readyA(Bp)` | Prints bin ready message |
+| `log_level_pctA(Bp, NL)` | Prints current fill level percentage |
+| `log_bin_fullA(Bp, L)` | Prints `stage=full` with current level and notify target |
+| `log_bin_resetA(Bp)` | Prints `stage=reset level=0%` message |
 
 ---
 
 ### 5.4 Logger — Action Table
 
-| Action | Type | Effect |
-|---|---|---|
-| `assert(log_store(T,Sender,Event,Level))` | State | Persists a timestamped log entry in the knowledge base |
-| `retractall(log_store/4)` | State | Clears entire log store on restart |
-| `assert(recent_log(Key,Now))` | State | Records timestamp of last printed occurrence of a log key |
-| `retractall(recent_log/2)` | State | Clears deduplication cache on restart |
-| `format('[logger] ~w  ~w~n', [Lvl, Msg])` | Output | Writes formatted log line to console stdout |
+**State Management** *(knowledge base operations)*
+
+| Action | Effect |
+|---|---|
+| `assert(log_store(T, Sender, Event, Level))` | Persists a timestamped log entry in the knowledge base |
+| `assert(recent_log(Key, Now))` | Records the timestamp of the last printed occurrence of a log key |
+| `retractall(log_store/4)` | Clears the entire log store on restart |
+| `retractall(recent_log/2)` | Clears the deduplication cache on restart |
+
+**Output**
+
+| Action | Effect |
+|---|---|
+| `format('[logger] ~w  ~w~n', [Lvl, Msg])` | Writes a formatted log line to console stdout |
 
 ---
 
