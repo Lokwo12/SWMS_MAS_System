@@ -59,45 +59,76 @@ The entire workflow runs without human intervention and is resilient to truck re
 sequenceDiagram
     participant Bin as SmartBin
     participant CC as ControlCenter
-    participant TrA as Truck-A (busy)
-    participant TrB as Truck-B (idle)
-    participant Log as Logger
+    participant Truck1 as Truck_First
+    participant Truck2 as Truck_Second
+    participant Logger
 
-    Note over Bin: Fills periodically
-    Bin->>CC: bin_full(BinId, Token)
-    CC->>TrA: pickup_request(BinId, ReqId, Token)
+    Note over Bin: Periodically fills up
 
-    alt Truck-A is busy
-        TrA->>CC: job_refuse(TrA, BinId, ReqId, Token)
-        CC->>TrB: pickup_request(BinId, ReqId, Token)
+    Bin->>Bin: increase_level()
+
+    alt Bin becomes full
+        Bin->>CC: bin_full(BinId, Token)
+        Bin->>Logger: log(info, bin_full, BinId)
+
+        CC->>CC: generate ReqId
+        CC->>CC: select idle truck
+
+        CC->>Truck1: pickup_request(BinId, ReqId, Token)
+        CC->>Logger: log(info, pickup_request_sent, ReqId)
+
+        alt Truck1 accepts
+
+            Truck1->>CC: job_accept(Truck1, BinId, ReqId, Token)
+            Truck1->>Logger: log(info, pickup_accept, BinId)
+
+            CC->>CC: update_state(awaiting_assign_ack)
+
+            CC->>Truck1: assignment(BinId, ReqId, Token)
+
+            Truck1->>CC: assignment_ack(Truck1, BinId, ReqId, Token)
+
+            CC->>CC: update_state(awaiting_completion)
+
+            Note over Truck1: move() timer
+
+            Truck1->>Truck1: move() for move_time ticks
+
+            Note over Truck1: collect() timer
+
+            Truck1->>Truck1: collect() for collect_time ticks
+
+            Truck1->>CC: collection_complete(BinId, ReqId, Token)
+
+            CC->>CC: update_state(awaiting_reset_ack)
+
+            CC->>Bin: reset_bin(BinId, ReqId, Token)
+
+            Bin->>Bin: reset level to 0
+
+            Bin->>CC: reset_ack(BinId, ReqId, Token)
+
+            Bin->>Logger: log(info, bin_reset, BinId)
+
+            CC->>CC: close_request()
+
+            CC->>Logger: log(info, request_closed, ReqId)
+
+        else Truck1 refuses
+
+            Truck1->>CC: job_refuse(Truck1, BinId, ReqId, Token)
+
+            CC->>CC: mark_tried(BinId, Truck1)
+
+            CC->>Truck2: pickup_request(BinId, ReqId, Token)
+
+            Note over Truck2: same accept flow as above
+
+        end
     end
 
-    TrB->>CC: job_accept(TrB, BinId, ReqId, Token)
-    CC->>TrB: assignment(BinId, ReqId, Token)
-    TrB->>CC: assignment_ack(TrB, BinId, ReqId, Token)
-
-    Note over TrB: move_time ticks → collect_time ticks
-
-    TrB->>CC: collection_complete(BinId, ReqId, Token)
-    CC->>Bin: reset_bin(BinId, ReqId, Token)
-    Bin->>CC: reset_ack(BinId, ReqId, Token)
-    CC->>Log: log_event_in(info, request_closed, ReqId, BinId, TrB, ...)
-
-    Note over Log: All events deduplicated within 1.2 s window
+    Note over Logger: Log events are deduplicated within a time window
 ```
-
----
-
-## Key Features
-
-- **Fully autonomous** — no polling or human triggers once started
-- **Fault-tolerant dispatch** — truck refusals and timeouts trigger automatic retry
-- **TTL supervision** — four independently tunable timeout windows per request
-- **Idempotent messaging** — duplicate messages safely ignored at every agent
-- **Structured logging** — all lifecycle events recorded centrally with deduplication
-- **Real-time dashboard** — WebSocket web UI streams live agent state and event log
-- **Token authentication** — all messages validated against a shared secret
-
 ---
 
 ## Technology Stack
