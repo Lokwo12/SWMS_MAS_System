@@ -317,13 +317,6 @@ sequenceDiagram
 ---
 
 ## 4. Event Table
-
-> **Reading guide** — Events are grouped by origin and role:
-> - **External Events** are messages received from other agents — these are the primary protocol drivers.
-> - **Core Lifecycle Events** are the internal transitions that implement the protocol logic.
-> - **Timeout & Recovery Events** implement TTL-based fault tolerance.
-> - **Cyclic & Init Events** are heartbeat and startup mechanics.
-
 ---
 
 ### 4.1 ControlCenter — Event Table
@@ -455,12 +448,6 @@ sequenceDiagram
 ---
 
 ## 5. Action Table
-
-> **Reading guide** — Actions are grouped by type:
-> - **Outgoing Messages** are the primary inter-agent communication actions.
-> - **State Management** covers all knowledge-base read/write operations.
-> - **Utilities** covers helper predicates (timestamps, formatting, logging helpers).
-
 ---
 
 ### 5.1 ControlCenter — Action Table
