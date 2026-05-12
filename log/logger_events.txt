@@ -5,561 +5,925 @@ Licensed to studentSP4.6cc.univaq.it
 ..................   Actived Agent logger ...................
 [logger] logger online
 [logger] INFO  level_update  bin=smartbin1 level=20%
-[logger] INFO  level_update  bin=smartbin2 level=20%
 [logger] INFO  level_update  bin=smartbin1 level=40%
-[logger] INFO  level_update  bin=smartbin3 level=20%
-[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin2 level=20%
 [logger] INFO  level_update  bin=smartbin1 level=60%
-[logger] INFO  level_update  bin=smartbin3 level=40%
-[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=20%
 [logger] INFO  level_update  bin=smartbin1 level=80%
-[logger] INFO  level_update  bin=smartbin3 level=60%
-[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] INFO  level_update  bin=smartbin3 level=40%
 [logger] INFO  level_update  bin=smartbin1 level=100%
 [logger] WARN  bin_full          bin=smartbin1
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  level_update  bin=smartbin3 level=60%
 [logger] WARN  bin_full_received  bin=smartbin1
 [logger] INFO  pickup_dispatched  req=1 bin=smartbin1 truck=truck3
 [logger] INFO  pickup_accepted  req=1 bin=smartbin1 truck=truck3
-[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  job_accepted  req=1 bin=smartbin1 truck=truck3
 [logger] INFO  level_update  bin=smartbin2 level=100%
 [logger] WARN  bin_full          bin=smartbin2
-[logger] INFO  job_accepted  req=1 bin=smartbin1 truck=truck3
+[logger] INFO  level_update  bin=smartbin3 level=80%
 [logger] WARN  bin_full_received  bin=smartbin2
-[logger] INFO  pickup_dispatched  req=2 bin=smartbin2 truck=truck1
-[logger] INFO  pickup_accepted  req=2 bin=smartbin2 truck=truck1
-[logger] INFO  job_accepted  req=2 bin=smartbin2 truck=truck1
+[logger] INFO  pickup_dispatched  req=2 bin=smartbin2 truck=truck2
+[logger] INFO  pickup_accepted  req=2 bin=smartbin2 truck=truck2
+[logger] INFO  job_accepted  req=2 bin=smartbin2 truck=truck2
 [logger] INFO  level_update  bin=smartbin3 level=100%
 [logger] WARN  bin_full          bin=smartbin3
 [logger] WARN  bin_full_received  bin=smartbin3
-[logger] INFO  pickup_dispatched  req=3 bin=smartbin3 truck=truck2
-[logger] INFO  pickup_accepted  req=3 bin=smartbin3 truck=truck2
-[logger] INFO  job_accepted  req=3 bin=smartbin3 truck=truck2
+[logger] INFO  pickup_dispatched  req=3 bin=smartbin3 truck=truck1
+[logger] INFO  pickup_accepted  req=3 bin=smartbin3 truck=truck1
+[logger] INFO  job_accepted  req=3 bin=smartbin3 truck=truck1
 [logger] INFO  collection_done  req=1 bin=smartbin1 truck=truck3
 [logger] INFO  collection_complete  req=1 bin=smartbin1 truck=truck3
-[logger] INFO  collection_done  req=2 bin=smartbin2 truck=truck1
 [logger] INFO  bin_reset  req=1 bin=smartbin1
-[logger] INFO  collection_complete  req=2 bin=smartbin2 truck=truck1
 [logger] INFO  request_closed  req=1 bin=smartbin1
+[logger] INFO  collection_done  req=2 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=2 bin=smartbin2 truck=truck2
+[logger] INFO  collection_done  req=3 bin=smartbin3 truck=truck1
+[logger] INFO  collection_complete  req=3 bin=smartbin3 truck=truck1
 [logger] INFO  bin_reset  req=2 bin=smartbin2
-[logger] INFO  request_closed  req=2 bin=smartbin2
-[logger] INFO  collection_done  req=3 bin=smartbin3 truck=truck2
-[logger] INFO  collection_complete  req=3 bin=smartbin3 truck=truck2
 [logger] INFO  bin_reset  req=3 bin=smartbin3
+[logger] INFO  request_closed  req=2 bin=smartbin2
 [logger] INFO  request_closed  req=3 bin=smartbin3
 [logger] INFO  level_update  bin=smartbin1 level=20%
-[logger] INFO  level_update  bin=smartbin2 level=20%
 [logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin2 level=20%
 [logger] INFO  level_update  bin=smartbin3 level=20%
-[logger] INFO  level_update  bin=smartbin2 level=40%
 [logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=40%
 [logger] INFO  level_update  bin=smartbin3 level=40%
-[logger] INFO  level_update  bin=smartbin2 level=60%
 [logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=60%
 [logger] INFO  level_update  bin=smartbin3 level=60%
-[logger] INFO  level_update  bin=smartbin2 level=80%
 [logger] INFO  level_update  bin=smartbin1 level=100%
 [logger] WARN  bin_full          bin=smartbin1
-[logger] WARN  bin_full_received  bin=smartbin1
-[logger] INFO  pickup_dispatched  req=4 bin=smartbin1 truck=truck1
+[logger] INFO  level_update  bin=smartbin2 level=80%
 [logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=4 bin=smartbin1 truck=truck2
+[logger] INFO  pickup_accepted  req=4 bin=smartbin1 truck=truck2
+[logger] INFO  job_accepted  req=4 bin=smartbin1 truck=truck2
 [logger] INFO  level_update  bin=smartbin2 level=100%
 [logger] WARN  bin_full          bin=smartbin2
-[logger] INFO  pickup_accepted  req=4 bin=smartbin1 truck=truck1
-[logger] WARN  bin_full_received  bin=smartbin2
-[logger] INFO  pickup_dispatched  req=5 bin=smartbin2 truck=truck2
-[logger] INFO  job_accepted  req=4 bin=smartbin1 truck=truck1
-[logger] INFO  pickup_accepted  req=5 bin=smartbin2 truck=truck2
-[logger] INFO  job_accepted  req=5 bin=smartbin2 truck=truck2
 [logger] INFO  level_update  bin=smartbin3 level=100%
 [logger] WARN  bin_full          bin=smartbin3
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=5 bin=smartbin2 truck=truck1
 [logger] WARN  bin_full_received  bin=smartbin3
 [logger] INFO  pickup_dispatched  req=6 bin=smartbin3 truck=truck3
 [logger] INFO  pickup_accepted  req=6 bin=smartbin3 truck=truck3
+[logger] INFO  pickup_accepted  req=5 bin=smartbin2 truck=truck1
 [logger] INFO  job_accepted  req=6 bin=smartbin3 truck=truck3
-[logger] INFO  collection_done  req=4 bin=smartbin1 truck=truck1
-[logger] INFO  collection_complete  req=4 bin=smartbin1 truck=truck1
+[logger] INFO  job_accepted  req=5 bin=smartbin2 truck=truck1
+[logger] INFO  collection_done  req=4 bin=smartbin1 truck=truck2
+[logger] INFO  collection_complete  req=4 bin=smartbin1 truck=truck2
 [logger] INFO  bin_reset  req=4 bin=smartbin1
-[logger] INFO  collection_done  req=5 bin=smartbin2 truck=truck2
-[logger] INFO  request_closed  req=4 bin=smartbin1
-[logger] INFO  collection_complete  req=5 bin=smartbin2 truck=truck2
-[logger] INFO  bin_reset  req=5 bin=smartbin2
-[logger] INFO  request_closed  req=5 bin=smartbin2
 [logger] INFO  collection_done  req=6 bin=smartbin3 truck=truck3
+[logger] INFO  request_closed  req=4 bin=smartbin1
 [logger] INFO  collection_complete  req=6 bin=smartbin3 truck=truck3
 [logger] INFO  bin_reset  req=6 bin=smartbin3
 [logger] INFO  request_closed  req=6 bin=smartbin3
+[logger] INFO  collection_done  req=5 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=5 bin=smartbin2 truck=truck1
+[logger] INFO  bin_reset  req=5 bin=smartbin2
+[logger] INFO  request_closed  req=5 bin=smartbin2
 [logger] INFO  level_update  bin=smartbin1 level=20%
-[logger] INFO  level_update  bin=smartbin2 level=20%
-[logger] INFO  level_update  bin=smartbin1 level=40%
-[logger] INFO  level_update  bin=smartbin2 level=40%
 [logger] INFO  level_update  bin=smartbin3 level=20%
-[logger] INFO  level_update  bin=smartbin1 level=60%
-[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=40%
 [logger] INFO  level_update  bin=smartbin3 level=40%
-[logger] INFO  level_update  bin=smartbin1 level=80%
-[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin1 level=60%
 [logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=60%
 [logger] INFO  level_update  bin=smartbin1 level=100%
 [logger] WARN  bin_full          bin=smartbin1
 [logger] WARN  bin_full_received  bin=smartbin1
-[logger] INFO  pickup_dispatched  req=7 bin=smartbin1 truck=truck2
-[logger] INFO  level_update  bin=smartbin2 level=100%
-[logger] WARN  bin_full          bin=smartbin2
-[logger] INFO  pickup_accepted  req=7 bin=smartbin1 truck=truck2
-[logger] WARN  bin_full_received  bin=smartbin2
-[logger] INFO  pickup_dispatched  req=8 bin=smartbin2 truck=truck1
-[logger] INFO  job_accepted  req=7 bin=smartbin1 truck=truck2
-[logger] INFO  level_update  bin=smartbin3 level=80%
-[logger] INFO  pickup_accepted  req=8 bin=smartbin2 truck=truck1
-[logger] INFO  job_accepted  req=8 bin=smartbin2 truck=truck1
+[logger] INFO  pickup_dispatched  req=7 bin=smartbin1 truck=truck3
 [logger] INFO  level_update  bin=smartbin3 level=100%
 [logger] WARN  bin_full          bin=smartbin3
+[logger] INFO  pickup_accepted  req=7 bin=smartbin1 truck=truck3
+[logger] INFO  level_update  bin=smartbin2 level=80%
 [logger] WARN  bin_full_received  bin=smartbin3
-[logger] INFO  pickup_dispatched  req=9 bin=smartbin3 truck=truck3
-[logger] INFO  pickup_accepted  req=9 bin=smartbin3 truck=truck3
-[logger] INFO  job_accepted  req=9 bin=smartbin3 truck=truck3
-[logger] INFO  collection_done  req=7 bin=smartbin1 truck=truck2
-[logger] INFO  collection_complete  req=7 bin=smartbin1 truck=truck2
+[logger] INFO  pickup_dispatched  req=8 bin=smartbin3 truck=truck1
+[logger] INFO  job_accepted  req=7 bin=smartbin1 truck=truck3
+[logger] INFO  pickup_accepted  req=8 bin=smartbin3 truck=truck1
+[logger] INFO  job_accepted  req=8 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=9 bin=smartbin2 truck=truck2
+[logger] INFO  pickup_accepted  req=9 bin=smartbin2 truck=truck2
+[logger] INFO  job_accepted  req=9 bin=smartbin2 truck=truck2
+[logger] INFO  collection_done  req=7 bin=smartbin1 truck=truck3
+[logger] INFO  collection_done  req=8 bin=smartbin3 truck=truck1
+[logger] INFO  collection_complete  req=7 bin=smartbin1 truck=truck3
+[logger] INFO  collection_complete  req=8 bin=smartbin3 truck=truck1
+[logger] INFO  bin_reset  req=8 bin=smartbin3
 [logger] INFO  bin_reset  req=7 bin=smartbin1
-[logger] INFO  collection_done  req=8 bin=smartbin2 truck=truck1
+[logger] INFO  request_closed  req=8 bin=smartbin3
 [logger] INFO  request_closed  req=7 bin=smartbin1
-[logger] INFO  collection_complete  req=8 bin=smartbin2 truck=truck1
-[logger] INFO  bin_reset  req=8 bin=smartbin2
-[logger] INFO  request_closed  req=8 bin=smartbin2
-[logger] INFO  collection_done  req=9 bin=smartbin3 truck=truck3
-[logger] INFO  collection_complete  req=9 bin=smartbin3 truck=truck3
-[logger] INFO  bin_reset  req=9 bin=smartbin3
-[logger] INFO  request_closed  req=9 bin=smartbin3
-[logger] INFO  level_update  bin=smartbin1 level=20%
-[logger] INFO  level_update  bin=smartbin2 level=20%
-[logger] INFO  level_update  bin=smartbin1 level=40%
-[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  collection_done  req=9 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=9 bin=smartbin2 truck=truck2
+[logger] INFO  bin_reset  req=9 bin=smartbin2
+[logger] INFO  request_closed  req=9 bin=smartbin2
 [logger] INFO  level_update  bin=smartbin3 level=20%
-[logger] INFO  level_update  bin=smartbin1 level=60%
-[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=20%
 [logger] INFO  level_update  bin=smartbin3 level=40%
-[logger] INFO  level_update  bin=smartbin1 level=80%
-[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin2 level=20%
 [logger] INFO  level_update  bin=smartbin3 level=60%
-[logger] INFO  level_update  bin=smartbin1 level=100%
-[logger] WARN  bin_full          bin=smartbin1
-[logger] WARN  bin_full_received  bin=smartbin1
-[logger] INFO  pickup_dispatched  req=10 bin=smartbin1 truck=truck3
-[logger] INFO  pickup_accepted  req=10 bin=smartbin1 truck=truck3
-[logger] INFO  job_accepted  req=10 bin=smartbin1 truck=truck3
-[logger] INFO  level_update  bin=smartbin2 level=100%
-[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=40%
 [logger] INFO  level_update  bin=smartbin3 level=80%
-[logger] WARN  bin_full_received  bin=smartbin2
-[logger] INFO  pickup_dispatched  req=11 bin=smartbin2 truck=truck2
-[logger] INFO  pickup_accepted  req=11 bin=smartbin2 truck=truck2
-[logger] INFO  job_accepted  req=11 bin=smartbin2 truck=truck2
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=60%
 [logger] INFO  level_update  bin=smartbin3 level=100%
 [logger] WARN  bin_full          bin=smartbin3
-[logger] WARN  bin_full_received  bin=smartbin3
-[logger] INFO  pickup_dispatched  req=12 bin=smartbin3 truck=truck1
-[logger] INFO  collection_done  req=10 bin=smartbin1 truck=truck3
-[logger] INFO  pickup_accepted  req=12 bin=smartbin3 truck=truck1
-[logger] INFO  collection_complete  req=10 bin=smartbin1 truck=truck3
-[logger] INFO  job_accepted  req=12 bin=smartbin3 truck=truck1
-[logger] INFO  bin_reset  req=10 bin=smartbin1
-[logger] INFO  request_closed  req=10 bin=smartbin1
-[logger] INFO  collection_done  req=11 bin=smartbin2 truck=truck2
-[logger] INFO  collection_complete  req=11 bin=smartbin2 truck=truck2
-[logger] INFO  bin_reset  req=11 bin=smartbin2
-[logger] INFO  request_closed  req=11 bin=smartbin2
-[logger] INFO  collection_done  req=12 bin=smartbin3 truck=truck1
-[logger] INFO  collection_complete  req=12 bin=smartbin3 truck=truck1
-[logger] INFO  bin_reset  req=12 bin=smartbin3
-[logger] INFO  request_closed  req=12 bin=smartbin3
-[logger] INFO  level_update  bin=smartbin1 level=20%
-[logger] INFO  level_update  bin=smartbin2 level=20%
-[logger] INFO  level_update  bin=smartbin1 level=40%
-[logger] INFO  level_update  bin=smartbin2 level=40%
-[logger] INFO  level_update  bin=smartbin1 level=60%
-[logger] INFO  level_update  bin=smartbin3 level=20%
-[logger] INFO  level_update  bin=smartbin2 level=60%
-[logger] INFO  level_update  bin=smartbin1 level=80%
-[logger] INFO  level_update  bin=smartbin3 level=40%
-[logger] INFO  level_update  bin=smartbin2 level=80%
 [logger] INFO  level_update  bin=smartbin1 level=100%
 [logger] WARN  bin_full          bin=smartbin1
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=10 bin=smartbin3 truck=truck3
 [logger] WARN  bin_full_received  bin=smartbin1
-[logger] INFO  pickup_dispatched  req=13 bin=smartbin1 truck=truck3
-[logger] INFO  pickup_accepted  req=13 bin=smartbin1 truck=truck3
-[logger] INFO  level_update  bin=smartbin3 level=60%
-[logger] INFO  job_accepted  req=13 bin=smartbin1 truck=truck3
+[logger] INFO  pickup_dispatched  req=11 bin=smartbin1 truck=truck2
+[logger] INFO  pickup_accepted  req=10 bin=smartbin3 truck=truck3
+[logger] INFO  pickup_accepted  req=11 bin=smartbin1 truck=truck2
+[logger] INFO  job_accepted  req=10 bin=smartbin3 truck=truck3
+[logger] INFO  job_accepted  req=11 bin=smartbin1 truck=truck2
 [logger] INFO  level_update  bin=smartbin2 level=100%
 [logger] WARN  bin_full          bin=smartbin2
 [logger] WARN  bin_full_received  bin=smartbin2
-[logger] INFO  pickup_dispatched  req=14 bin=smartbin2 truck=truck2
-[logger] INFO  pickup_accepted  req=14 bin=smartbin2 truck=truck2
+[logger] INFO  pickup_dispatched  req=12 bin=smartbin2 truck=truck1
+[logger] INFO  pickup_accepted  req=12 bin=smartbin2 truck=truck1
+[logger] INFO  collection_done  req=10 bin=smartbin3 truck=truck3
+[logger] INFO  job_accepted  req=12 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=10 bin=smartbin3 truck=truck3
+[logger] INFO  collection_done  req=11 bin=smartbin1 truck=truck2
+[logger] INFO  bin_reset  req=10 bin=smartbin3
+[logger] INFO  collection_complete  req=11 bin=smartbin1 truck=truck2
+[logger] INFO  bin_reset  req=11 bin=smartbin1
+[logger] INFO  request_closed  req=10 bin=smartbin3
+[logger] INFO  request_closed  req=11 bin=smartbin1
+[logger] INFO  collection_done  req=12 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=12 bin=smartbin2 truck=truck1
+[logger] INFO  bin_reset  req=12 bin=smartbin2
+[logger] INFO  request_closed  req=12 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin1 level=60%
 [logger] INFO  level_update  bin=smartbin3 level=80%
-[logger] INFO  job_accepted  req=14 bin=smartbin2 truck=truck2
-[logger] INFO  collection_done  req=13 bin=smartbin1 truck=truck3
-[logger] INFO  collection_complete  req=13 bin=smartbin1 truck=truck3
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=80%
 [logger] INFO  level_update  bin=smartbin3 level=100%
 [logger] WARN  bin_full          bin=smartbin3
-[logger] INFO  bin_reset  req=13 bin=smartbin1
-[logger] WARN  bin_full_received  bin=smartbin3
-[logger] INFO  pickup_dispatched  req=15 bin=smartbin3 truck=truck1
-[logger] INFO  pickup_accepted  req=15 bin=smartbin3 truck=truck1
-[logger] INFO  request_closed  req=13 bin=smartbin1
-[logger] INFO  job_accepted  req=15 bin=smartbin3 truck=truck1
-[logger] INFO  collection_done  req=14 bin=smartbin2 truck=truck2
-[logger] INFO  collection_complete  req=14 bin=smartbin2 truck=truck2
-[logger] INFO  bin_reset  req=14 bin=smartbin2
-[logger] INFO  request_closed  req=14 bin=smartbin2
-[logger] INFO  collection_done  req=15 bin=smartbin3 truck=truck1
-[logger] INFO  collection_complete  req=15 bin=smartbin3 truck=truck1
-[logger] INFO  bin_reset  req=15 bin=smartbin3
-[logger] INFO  level_update  bin=smartbin1 level=20%
-[logger] INFO  request_closed  req=15 bin=smartbin3
-[logger] INFO  level_update  bin=smartbin2 level=20%
-[logger] INFO  level_update  bin=smartbin1 level=40%
-[logger] INFO  level_update  bin=smartbin2 level=40%
-[logger] INFO  level_update  bin=smartbin1 level=60%
-[logger] INFO  level_update  bin=smartbin3 level=20%
 [logger] INFO  level_update  bin=smartbin2 level=60%
-[logger] INFO  level_update  bin=smartbin1 level=80%
-[logger] INFO  level_update  bin=smartbin3 level=40%
-[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=13 bin=smartbin3 truck=truck3
+[logger] INFO  pickup_accepted  req=13 bin=smartbin3 truck=truck3
+[logger] INFO  job_accepted  req=13 bin=smartbin3 truck=truck3
 [logger] INFO  level_update  bin=smartbin1 level=100%
 [logger] WARN  bin_full          bin=smartbin1
 [logger] WARN  bin_full_received  bin=smartbin1
-[logger] INFO  pickup_dispatched  req=16 bin=smartbin1 truck=truck1
+[logger] INFO  pickup_dispatched  req=14 bin=smartbin1 truck=truck2
+[logger] INFO  pickup_accepted  req=14 bin=smartbin1 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  job_accepted  req=14 bin=smartbin1 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  collection_done  req=13 bin=smartbin3 truck=truck3
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=15 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=13 bin=smartbin3 truck=truck3
+[logger] INFO  bin_reset  req=13 bin=smartbin3
+[logger] INFO  pickup_accepted  req=15 bin=smartbin2 truck=truck1
+[logger] INFO  collection_done  req=14 bin=smartbin1 truck=truck2
+[logger] INFO  request_closed  req=13 bin=smartbin3
+[logger] INFO  job_accepted  req=15 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=14 bin=smartbin1 truck=truck2
+[logger] INFO  bin_reset  req=14 bin=smartbin1
+[logger] INFO  request_closed  req=14 bin=smartbin1
+[logger] INFO  collection_done  req=15 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=15 bin=smartbin2 truck=truck1
+[logger] INFO  bin_reset  req=15 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  request_closed  req=15 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=20%
 [logger] INFO  level_update  bin=smartbin3 level=60%
-[logger] INFO  pickup_accepted  req=16 bin=smartbin1 truck=truck1
-[logger] INFO  job_accepted  req=16 bin=smartbin1 truck=truck1
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=100%
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] WARN  bin_full          bin=smartbin3
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=16 bin=smartbin3 truck=truck1
+[logger] INFO  pickup_accepted  req=16 bin=smartbin3 truck=truck1
+[logger] INFO  job_accepted  req=16 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=17 bin=smartbin1 truck=truck3
+[logger] INFO  pickup_accepted  req=17 bin=smartbin1 truck=truck3
+[logger] INFO  job_accepted  req=17 bin=smartbin1 truck=truck3
 [logger] INFO  level_update  bin=smartbin2 level=100%
 [logger] WARN  bin_full          bin=smartbin2
 [logger] WARN  bin_full_received  bin=smartbin2
-[logger] INFO  pickup_dispatched  req=17 bin=smartbin2 truck=truck3
+[logger] INFO  pickup_dispatched  req=18 bin=smartbin2 truck=truck2
+[logger] INFO  collection_done  req=16 bin=smartbin3 truck=truck1
+[logger] INFO  pickup_accepted  req=18 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=16 bin=smartbin3 truck=truck1
+[logger] INFO  job_accepted  req=18 bin=smartbin2 truck=truck2
+[logger] INFO  bin_reset  req=16 bin=smartbin3
+[logger] INFO  request_closed  req=16 bin=smartbin3
+[logger] INFO  collection_done  req=17 bin=smartbin1 truck=truck3
+[logger] INFO  collection_complete  req=17 bin=smartbin1 truck=truck3
+[logger] INFO  bin_reset  req=17 bin=smartbin1
+[logger] INFO  request_closed  req=17 bin=smartbin1
+[logger] INFO  collection_done  req=18 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=18 bin=smartbin2 truck=truck2
+[logger] INFO  bin_reset  req=18 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  request_closed  req=18 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin2 level=20%
 [logger] INFO  level_update  bin=smartbin3 level=80%
-[logger] INFO  pickup_accepted  req=17 bin=smartbin2 truck=truck3
-[logger] INFO  job_accepted  req=17 bin=smartbin2 truck=truck3
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=40%
 [logger] INFO  level_update  bin=smartbin3 level=100%
 [logger] WARN  bin_full          bin=smartbin3
-[logger] INFO  collection_done  req=16 bin=smartbin1 truck=truck1
-[logger] WARN  bin_full_received  bin=smartbin3
-[logger] INFO  pickup_dispatched  req=18 bin=smartbin3 truck=truck2
-[logger] INFO  collection_complete  req=16 bin=smartbin1 truck=truck1
-[logger] INFO  pickup_accepted  req=18 bin=smartbin3 truck=truck2
-[logger] INFO  bin_reset  req=16 bin=smartbin1
-[logger] INFO  job_accepted  req=18 bin=smartbin3 truck=truck2
-[logger] INFO  request_closed  req=16 bin=smartbin1
-[logger] INFO  collection_done  req=17 bin=smartbin2 truck=truck3
-[logger] INFO  collection_complete  req=17 bin=smartbin2 truck=truck3
-[logger] INFO  bin_reset  req=17 bin=smartbin2
-[logger] INFO  request_closed  req=17 bin=smartbin2
-[logger] INFO  collection_done  req=18 bin=smartbin3 truck=truck2
-[logger] INFO  collection_complete  req=18 bin=smartbin3 truck=truck2
-[logger] INFO  level_update  bin=smartbin1 level=20%
-[logger] INFO  bin_reset  req=18 bin=smartbin3
-[logger] INFO  request_closed  req=18 bin=smartbin3
-[logger] INFO  level_update  bin=smartbin2 level=20%
-[logger] INFO  level_update  bin=smartbin1 level=40%
-[logger] INFO  level_update  bin=smartbin2 level=40%
-[logger] INFO  level_update  bin=smartbin1 level=60%
-[logger] INFO  level_update  bin=smartbin2 level=60%
-[logger] INFO  level_update  bin=smartbin3 level=20%
 [logger] INFO  level_update  bin=smartbin1 level=80%
-[logger] INFO  level_update  bin=smartbin2 level=80%
-[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=19 bin=smartbin3 truck=truck2
+[logger] INFO  pickup_accepted  req=19 bin=smartbin3 truck=truck2
+[logger] INFO  job_accepted  req=19 bin=smartbin3 truck=truck2
 [logger] INFO  level_update  bin=smartbin1 level=100%
 [logger] WARN  bin_full          bin=smartbin1
+[logger] INFO  level_update  bin=smartbin2 level=80%
 [logger] WARN  bin_full_received  bin=smartbin1
-[logger] INFO  pickup_dispatched  req=19 bin=smartbin1 truck=truck2
-[logger] INFO  pickup_accepted  req=19 bin=smartbin1 truck=truck2
-[logger] INFO  job_accepted  req=19 bin=smartbin1 truck=truck2
+[logger] INFO  pickup_dispatched  req=20 bin=smartbin1 truck=truck3
+[logger] INFO  pickup_accepted  req=20 bin=smartbin1 truck=truck3
+[logger] INFO  job_accepted  req=20 bin=smartbin1 truck=truck3
 [logger] INFO  level_update  bin=smartbin2 level=100%
 [logger] WARN  bin_full          bin=smartbin2
-[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  collection_done  req=19 bin=smartbin3 truck=truck2
 [logger] WARN  bin_full_received  bin=smartbin2
-[logger] INFO  pickup_dispatched  req=20 bin=smartbin2 truck=truck3
-[logger] INFO  pickup_accepted  req=20 bin=smartbin2 truck=truck3
-[logger] INFO  collection_done  req=19 bin=smartbin1 truck=truck2
-[logger] INFO  job_accepted  req=20 bin=smartbin2 truck=truck3
-[logger] INFO  collection_complete  req=19 bin=smartbin1 truck=truck2
-[logger] INFO  level_update  bin=smartbin3 level=80%
-[logger] INFO  bin_reset  req=19 bin=smartbin1
-[logger] INFO  request_closed  req=19 bin=smartbin1
-[logger] INFO  level_update  bin=smartbin3 level=100%
-[logger] WARN  bin_full          bin=smartbin3
-[logger] WARN  bin_full_received  bin=smartbin3
-[logger] INFO  pickup_dispatched  req=21 bin=smartbin3 truck=truck2
-[logger] INFO  pickup_accepted  req=21 bin=smartbin3 truck=truck2
-[logger] INFO  job_accepted  req=21 bin=smartbin3 truck=truck2
-[logger] INFO  collection_done  req=20 bin=smartbin2 truck=truck3
-[logger] INFO  collection_complete  req=20 bin=smartbin2 truck=truck3
-[logger] INFO  bin_reset  req=20 bin=smartbin2
-[logger] INFO  request_closed  req=20 bin=smartbin2
-[logger] INFO  level_update  bin=smartbin1 level=20%
-[logger] INFO  collection_done  req=21 bin=smartbin3 truck=truck2
-[logger] INFO  level_update  bin=smartbin1 level=40%
-[logger] INFO  collection_complete  req=21 bin=smartbin3 truck=truck2
-[logger] INFO  bin_reset  req=21 bin=smartbin3
-[logger] INFO  request_closed  req=21 bin=smartbin3
-[logger] INFO  level_update  bin=smartbin2 level=20%
-[logger] INFO  level_update  bin=smartbin1 level=60%
-[logger] INFO  level_update  bin=smartbin2 level=40%
-[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  pickup_dispatched  req=21 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=19 bin=smartbin3 truck=truck2
+[logger] INFO  pickup_accepted  req=21 bin=smartbin2 truck=truck1
+[logger] INFO  job_accepted  req=21 bin=smartbin2 truck=truck1
+[logger] INFO  bin_reset  req=19 bin=smartbin3
+[logger] INFO  request_closed  req=19 bin=smartbin3
+[logger] INFO  collection_done  req=20 bin=smartbin1 truck=truck3
+[logger] INFO  collection_complete  req=20 bin=smartbin1 truck=truck3
+[logger] INFO  bin_reset  req=20 bin=smartbin1
+[logger] INFO  request_closed  req=20 bin=smartbin1
+[logger] INFO  collection_done  req=21 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=21 bin=smartbin2 truck=truck1
+[logger] INFO  bin_reset  req=21 bin=smartbin2
+[logger] INFO  request_closed  req=21 bin=smartbin2
 [logger] INFO  level_update  bin=smartbin3 level=20%
-[logger] INFO  level_update  bin=smartbin2 level=60%
-[logger] INFO  level_update  bin=smartbin1 level=100%
-[logger] WARN  bin_full          bin=smartbin1
-[logger] WARN  bin_full_received  bin=smartbin1
-[logger] INFO  pickup_dispatched  req=22 bin=smartbin1 truck=truck3
-[logger] INFO  pickup_accepted  req=22 bin=smartbin1 truck=truck3
 [logger] INFO  level_update  bin=smartbin3 level=40%
-[logger] INFO  job_accepted  req=22 bin=smartbin1 truck=truck3
-[logger] INFO  level_update  bin=smartbin2 level=80%
-[logger] INFO  level_update  bin=smartbin3 level=60%
-[logger] INFO  level_update  bin=smartbin2 level=100%
-[logger] WARN  bin_full          bin=smartbin2
-[logger] INFO  collection_done  req=22 bin=smartbin1 truck=truck3
-[logger] WARN  bin_full_received  bin=smartbin2
-[logger] INFO  pickup_dispatched  req=23 bin=smartbin2 truck=truck1
-[logger] INFO  pickup_accepted  req=23 bin=smartbin2 truck=truck1
-[logger] INFO  collection_complete  req=22 bin=smartbin1 truck=truck3
-[logger] INFO  job_accepted  req=23 bin=smartbin2 truck=truck1
-[logger] INFO  level_update  bin=smartbin3 level=80%
-[logger] INFO  bin_reset  req=22 bin=smartbin1
-[logger] INFO  request_closed  req=22 bin=smartbin1
-[logger] INFO  level_update  bin=smartbin3 level=100%
-[logger] WARN  bin_full          bin=smartbin3
-[logger] WARN  bin_full_received  bin=smartbin3
-[logger] INFO  pickup_dispatched  req=24 bin=smartbin3 truck=truck2
-[logger] INFO  pickup_accepted  req=24 bin=smartbin3 truck=truck2
-[logger] INFO  collection_done  req=23 bin=smartbin2 truck=truck1
-[logger] INFO  job_accepted  req=24 bin=smartbin3 truck=truck2
-[logger] INFO  collection_complete  req=23 bin=smartbin2 truck=truck1
-[logger] INFO  bin_reset  req=23 bin=smartbin2
-[logger] INFO  request_closed  req=23 bin=smartbin2
 [logger] INFO  level_update  bin=smartbin1 level=20%
 [logger] INFO  level_update  bin=smartbin1 level=40%
-[logger] INFO  collection_done  req=24 bin=smartbin3 truck=truck2
-[logger] INFO  collection_complete  req=24 bin=smartbin3 truck=truck2
-[logger] INFO  level_update  bin=smartbin1 level=60%
-[logger] INFO  level_update  bin=smartbin2 level=20%
-[logger] INFO  bin_reset  req=24 bin=smartbin3
-[logger] INFO  request_closed  req=24 bin=smartbin3
-[logger] INFO  level_update  bin=smartbin1 level=80%
-[logger] INFO  level_update  bin=smartbin2 level=40%
-[logger] INFO  level_update  bin=smartbin1 level=100%
-[logger] WARN  bin_full          bin=smartbin1
-[logger] INFO  level_update  bin=smartbin2 level=60%
-[logger] WARN  bin_full_received  bin=smartbin1
-[logger] INFO  pickup_dispatched  req=25 bin=smartbin1 truck=truck2
-[logger] INFO  pickup_accepted  req=25 bin=smartbin1 truck=truck2
-[logger] INFO  job_accepted  req=25 bin=smartbin1 truck=truck2
-[logger] INFO  level_update  bin=smartbin3 level=20%
-[logger] INFO  level_update  bin=smartbin2 level=80%
-[logger] INFO  level_update  bin=smartbin3 level=40%
-[logger] INFO  collection_done  req=25 bin=smartbin1 truck=truck2
-[logger] INFO  collection_complete  req=25 bin=smartbin1 truck=truck2
-[logger] INFO  level_update  bin=smartbin2 level=100%
-[logger] WARN  bin_full          bin=smartbin2
-[logger] INFO  bin_reset  req=25 bin=smartbin1
-[logger] WARN  bin_full_received  bin=smartbin2
-[logger] INFO  pickup_dispatched  req=26 bin=smartbin2 truck=truck2
-[logger] INFO  request_closed  req=25 bin=smartbin1
 [logger] INFO  level_update  bin=smartbin3 level=60%
-[logger] INFO  pickup_accepted  req=26 bin=smartbin2 truck=truck2
-[logger] INFO  job_accepted  req=26 bin=smartbin2 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=20%
 [logger] INFO  level_update  bin=smartbin3 level=80%
-[logger] INFO  level_update  bin=smartbin3 level=100%
-[logger] INFO  level_update  bin=smartbin1 level=20%
-[logger] WARN  bin_full          bin=smartbin3
-[logger] INFO  collection_done  req=26 bin=smartbin2 truck=truck2
-[logger] WARN  bin_full_received  bin=smartbin3
-[logger] INFO  pickup_dispatched  req=27 bin=smartbin3 truck=truck3
-[logger] INFO  collection_complete  req=26 bin=smartbin2 truck=truck2
-[logger] INFO  bin_reset  req=26 bin=smartbin2
-[logger] INFO  pickup_accepted  req=27 bin=smartbin3 truck=truck3
-[logger] INFO  job_accepted  req=27 bin=smartbin3 truck=truck3
-[logger] INFO  level_update  bin=smartbin1 level=40%
-[logger] INFO  request_closed  req=26 bin=smartbin2
 [logger] INFO  level_update  bin=smartbin1 level=60%
-[logger] INFO  collection_done  req=27 bin=smartbin3 truck=truck3
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=100%
 [logger] INFO  level_update  bin=smartbin1 level=80%
-[logger] INFO  collection_complete  req=27 bin=smartbin3 truck=truck3
-[logger] INFO  level_update  bin=smartbin2 level=20%
-[logger] INFO  bin_reset  req=27 bin=smartbin3
-[logger] INFO  request_closed  req=27 bin=smartbin3
+[logger] WARN  bin_full          bin=smartbin3
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=22 bin=smartbin3 truck=truck2
+[logger] INFO  pickup_accepted  req=22 bin=smartbin3 truck=truck2
+[logger] INFO  job_accepted  req=22 bin=smartbin3 truck=truck2
 [logger] INFO  level_update  bin=smartbin1 level=100%
 [logger] WARN  bin_full          bin=smartbin1
-[logger] INFO  level_update  bin=smartbin2 level=40%
-[logger] WARN  bin_full_received  bin=smartbin1
-[logger] INFO  pickup_dispatched  req=28 bin=smartbin1 truck=truck1
-[logger] INFO  pickup_accepted  req=28 bin=smartbin1 truck=truck1
-[logger] INFO  job_accepted  req=28 bin=smartbin1 truck=truck1
-[logger] INFO  level_update  bin=smartbin2 level=60%
-[logger] INFO  level_update  bin=smartbin3 level=20%
 [logger] INFO  level_update  bin=smartbin2 level=80%
-[logger] INFO  collection_done  req=28 bin=smartbin1 truck=truck1
-[logger] INFO  level_update  bin=smartbin3 level=40%
-[logger] INFO  collection_complete  req=28 bin=smartbin1 truck=truck1
-[logger] INFO  bin_reset  req=28 bin=smartbin1
-[logger] INFO  level_update  bin=smartbin2 level=100%
-[logger] WARN  bin_full          bin=smartbin2
-[logger] INFO  request_closed  req=28 bin=smartbin1
-[logger] WARN  bin_full_received  bin=smartbin2
-[logger] INFO  pickup_dispatched  req=29 bin=smartbin2 truck=truck2
-[logger] INFO  level_update  bin=smartbin3 level=60%
-[logger] INFO  pickup_accepted  req=29 bin=smartbin2 truck=truck2
-[logger] INFO  job_accepted  req=29 bin=smartbin2 truck=truck2
-[logger] INFO  level_update  bin=smartbin3 level=80%
-[logger] INFO  level_update  bin=smartbin1 level=20%
-[logger] INFO  level_update  bin=smartbin3 level=100%
-[logger] WARN  bin_full          bin=smartbin3
-[logger] INFO  collection_done  req=29 bin=smartbin2 truck=truck2
-[logger] WARN  bin_full_received  bin=smartbin3
-[logger] INFO  pickup_dispatched  req=30 bin=smartbin3 truck=truck3
-[logger] INFO  collection_complete  req=29 bin=smartbin2 truck=truck2
-[logger] INFO  bin_reset  req=29 bin=smartbin2
-[logger] INFO  pickup_accepted  req=30 bin=smartbin3 truck=truck3
-[logger] INFO  request_closed  req=29 bin=smartbin2
-[logger] INFO  job_accepted  req=30 bin=smartbin3 truck=truck3
-[logger] INFO  level_update  bin=smartbin1 level=40%
-[logger] INFO  level_update  bin=smartbin1 level=60%
-[logger] INFO  collection_done  req=30 bin=smartbin3 truck=truck3
-[logger] INFO  collection_complete  req=30 bin=smartbin3 truck=truck3
-[logger] INFO  bin_reset  req=30 bin=smartbin3
-[logger] INFO  request_closed  req=30 bin=smartbin3
-[logger] INFO  level_update  bin=smartbin1 level=80%
-[logger] INFO  level_update  bin=smartbin2 level=20%
-[logger] INFO  level_update  bin=smartbin1 level=100%
-[logger] WARN  bin_full          bin=smartbin1
 [logger] WARN  bin_full_received  bin=smartbin1
-[logger] INFO  pickup_dispatched  req=31 bin=smartbin1 truck=truck3
-[logger] INFO  level_update  bin=smartbin2 level=40%
-[logger] INFO  pickup_accepted  req=31 bin=smartbin1 truck=truck3
-[logger] INFO  job_accepted  req=31 bin=smartbin1 truck=truck3
-[logger] INFO  level_update  bin=smartbin3 level=20%
-[logger] INFO  level_update  bin=smartbin2 level=60%
-[logger] INFO  collection_done  req=31 bin=smartbin1 truck=truck3
-[logger] INFO  level_update  bin=smartbin3 level=40%
-[logger] INFO  collection_complete  req=31 bin=smartbin1 truck=truck3
-[logger] INFO  level_update  bin=smartbin2 level=80%
-[logger] INFO  bin_reset  req=31 bin=smartbin1
-[logger] INFO  request_closed  req=31 bin=smartbin1
-[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  pickup_dispatched  req=23 bin=smartbin1 truck=truck1
+[logger] INFO  pickup_accepted  req=23 bin=smartbin1 truck=truck1
+[logger] INFO  job_accepted  req=23 bin=smartbin1 truck=truck1
 [logger] INFO  level_update  bin=smartbin2 level=100%
 [logger] WARN  bin_full          bin=smartbin2
 [logger] WARN  bin_full_received  bin=smartbin2
-[logger] INFO  pickup_dispatched  req=32 bin=smartbin2 truck=truck2
-[logger] INFO  pickup_accepted  req=32 bin=smartbin2 truck=truck2
-[logger] INFO  job_accepted  req=32 bin=smartbin2 truck=truck2
+[logger] INFO  pickup_dispatched  req=24 bin=smartbin2 truck=truck3
+[logger] INFO  pickup_accepted  req=24 bin=smartbin2 truck=truck3
+[logger] INFO  collection_done  req=22 bin=smartbin3 truck=truck2
+[logger] INFO  job_accepted  req=24 bin=smartbin2 truck=truck3
+[logger] INFO  collection_complete  req=22 bin=smartbin3 truck=truck2
+[logger] INFO  bin_reset  req=22 bin=smartbin3
+[logger] INFO  request_closed  req=22 bin=smartbin3
+[logger] INFO  collection_done  req=23 bin=smartbin1 truck=truck1
+[logger] INFO  collection_complete  req=23 bin=smartbin1 truck=truck1
+[logger] INFO  bin_reset  req=23 bin=smartbin1
+[logger] INFO  request_closed  req=23 bin=smartbin1
+[logger] INFO  collection_done  req=24 bin=smartbin2 truck=truck3
+[logger] INFO  collection_complete  req=24 bin=smartbin2 truck=truck3
+[logger] INFO  bin_reset  req=24 bin=smartbin2
+[logger] INFO  request_closed  req=24 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin2 level=20%
 [logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=40%
 [logger] INFO  level_update  bin=smartbin3 level=100%
 [logger] WARN  bin_full          bin=smartbin3
-[logger] INFO  level_update  bin=smartbin1 level=20%
-[logger] WARN  bin_full_received  bin=smartbin3
-[logger] INFO  pickup_dispatched  req=33 bin=smartbin3 truck=truck1
-[logger] INFO  collection_done  req=32 bin=smartbin2 truck=truck2
-[logger] INFO  collection_complete  req=32 bin=smartbin2 truck=truck2
-[logger] INFO  pickup_accepted  req=33 bin=smartbin3 truck=truck1
-[logger] INFO  bin_reset  req=32 bin=smartbin2
-[logger] INFO  job_accepted  req=33 bin=smartbin3 truck=truck1
-[logger] INFO  request_closed  req=32 bin=smartbin2
-[logger] INFO  level_update  bin=smartbin1 level=40%
-[logger] INFO  level_update  bin=smartbin1 level=60%
-[logger] INFO  collection_done  req=33 bin=smartbin3 truck=truck1
-[logger] INFO  collection_complete  req=33 bin=smartbin3 truck=truck1
 [logger] INFO  level_update  bin=smartbin1 level=80%
-[logger] INFO  bin_reset  req=33 bin=smartbin3
-[logger] INFO  level_update  bin=smartbin2 level=20%
-[logger] INFO  request_closed  req=33 bin=smartbin3
-[logger] INFO  level_update  bin=smartbin1 level=100%
-[logger] WARN  bin_full          bin=smartbin1
-[logger] INFO  level_update  bin=smartbin2 level=40%
-[logger] WARN  bin_full_received  bin=smartbin1
-[logger] INFO  pickup_dispatched  req=34 bin=smartbin1 truck=truck3
-[logger] INFO  pickup_accepted  req=34 bin=smartbin1 truck=truck3
-[logger] INFO  job_accepted  req=34 bin=smartbin1 truck=truck3
 [logger] INFO  level_update  bin=smartbin2 level=60%
-[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=25 bin=smartbin3 truck=truck1
+[logger] INFO  pickup_accepted  req=25 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] INFO  job_accepted  req=25 bin=smartbin3 truck=truck1
+[logger] WARN  bin_full          bin=smartbin1
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=26 bin=smartbin1 truck=truck3
 [logger] INFO  level_update  bin=smartbin2 level=80%
-[logger] INFO  level_update  bin=smartbin3 level=40%
-[logger] INFO  collection_done  req=34 bin=smartbin1 truck=truck3
-[logger] INFO  collection_complete  req=34 bin=smartbin1 truck=truck3
+[logger] INFO  pickup_accepted  req=26 bin=smartbin1 truck=truck3
+[logger] INFO  job_accepted  req=26 bin=smartbin1 truck=truck3
 [logger] INFO  level_update  bin=smartbin2 level=100%
 [logger] WARN  bin_full          bin=smartbin2
-[logger] INFO  bin_reset  req=34 bin=smartbin1
 [logger] WARN  bin_full_received  bin=smartbin2
-[logger] INFO  pickup_dispatched  req=35 bin=smartbin2 truck=truck2
-[logger] INFO  request_closed  req=34 bin=smartbin1
+[logger] INFO  pickup_dispatched  req=27 bin=smartbin2 truck=truck2
+[logger] INFO  pickup_accepted  req=27 bin=smartbin2 truck=truck2
+[logger] INFO  collection_done  req=25 bin=smartbin3 truck=truck1
+[logger] INFO  job_accepted  req=27 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=25 bin=smartbin3 truck=truck1
+[logger] INFO  bin_reset  req=25 bin=smartbin3
+[logger] INFO  collection_done  req=26 bin=smartbin1 truck=truck3
+[logger] INFO  request_closed  req=25 bin=smartbin3
+[logger] INFO  collection_complete  req=26 bin=smartbin1 truck=truck3
+[logger] INFO  bin_reset  req=26 bin=smartbin1
+[logger] INFO  request_closed  req=26 bin=smartbin1
+[logger] INFO  collection_done  req=27 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=27 bin=smartbin2 truck=truck2
+[logger] INFO  bin_reset  req=27 bin=smartbin2
+[logger] INFO  request_closed  req=27 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin2 level=20%
 [logger] INFO  level_update  bin=smartbin3 level=60%
-[logger] INFO  pickup_accepted  req=35 bin=smartbin2 truck=truck2
-[logger] INFO  job_accepted  req=35 bin=smartbin2 truck=truck2
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=40%
 [logger] INFO  level_update  bin=smartbin3 level=80%
-[logger] INFO  collection_done  req=35 bin=smartbin2 truck=truck2
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=60%
 [logger] INFO  level_update  bin=smartbin3 level=100%
 [logger] WARN  bin_full          bin=smartbin3
-[logger] INFO  collection_complete  req=35 bin=smartbin2 truck=truck2
-[logger] INFO  level_update  bin=smartbin1 level=20%
 [logger] WARN  bin_full_received  bin=smartbin3
-[logger] INFO  pickup_dispatched  req=36 bin=smartbin3 truck=truck2
-[logger] INFO  bin_reset  req=35 bin=smartbin2
-[logger] INFO  pickup_accepted  req=36 bin=smartbin3 truck=truck2
-[logger] INFO  request_closed  req=35 bin=smartbin2
-[logger] INFO  job_accepted  req=36 bin=smartbin3 truck=truck2
-[logger] INFO  level_update  bin=smartbin1 level=40%
-[logger] INFO  level_update  bin=smartbin1 level=60%
-[logger] INFO  collection_done  req=36 bin=smartbin3 truck=truck2
-[logger] INFO  level_update  bin=smartbin2 level=20%
-[logger] INFO  collection_complete  req=36 bin=smartbin3 truck=truck2
-[logger] INFO  level_update  bin=smartbin1 level=80%
-[logger] INFO  bin_reset  req=36 bin=smartbin3
-[logger] INFO  request_closed  req=36 bin=smartbin3
-[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  pickup_dispatched  req=28 bin=smartbin3 truck=truck3
 [logger] INFO  level_update  bin=smartbin1 level=100%
-[logger] WARN  bin_full          bin=smartbin1
-[logger] WARN  bin_full_received  bin=smartbin1
-[logger] INFO  pickup_dispatched  req=37 bin=smartbin1 truck=truck2
-[logger] INFO  pickup_accepted  req=37 bin=smartbin1 truck=truck2
-[logger] INFO  level_update  bin=smartbin2 level=60%
-[logger] INFO  job_accepted  req=37 bin=smartbin1 truck=truck2
-[logger] INFO  level_update  bin=smartbin3 level=20%
 [logger] INFO  level_update  bin=smartbin2 level=80%
-[logger] INFO  collection_done  req=37 bin=smartbin1 truck=truck2
-[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] INFO  pickup_accepted  req=28 bin=smartbin3 truck=truck3
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=29 bin=smartbin1 truck=truck1
+[logger] INFO  job_accepted  req=28 bin=smartbin3 truck=truck3
+[logger] INFO  pickup_accepted  req=29 bin=smartbin1 truck=truck1
+[logger] INFO  job_accepted  req=29 bin=smartbin1 truck=truck1
 [logger] INFO  level_update  bin=smartbin2 level=100%
 [logger] WARN  bin_full          bin=smartbin2
-[logger] INFO  collection_complete  req=37 bin=smartbin1 truck=truck2
 [logger] WARN  bin_full_received  bin=smartbin2
-[logger] INFO  pickup_dispatched  req=38 bin=smartbin2 truck=truck2
-[logger] INFO  pickup_accepted  req=38 bin=smartbin2 truck=truck2
-[logger] INFO  bin_reset  req=37 bin=smartbin1
-[logger] INFO  job_accepted  req=38 bin=smartbin2 truck=truck2
-[logger] INFO  request_closed  req=37 bin=smartbin1
+[logger] INFO  pickup_dispatched  req=30 bin=smartbin2 truck=truck2
+[logger] INFO  pickup_accepted  req=30 bin=smartbin2 truck=truck2
+[logger] INFO  job_accepted  req=30 bin=smartbin2 truck=truck2
+[logger] INFO  collection_done  req=28 bin=smartbin3 truck=truck3
+[logger] INFO  collection_complete  req=28 bin=smartbin3 truck=truck3
+[logger] INFO  bin_reset  req=28 bin=smartbin3
+[logger] INFO  collection_done  req=29 bin=smartbin1 truck=truck1
+[logger] INFO  request_closed  req=28 bin=smartbin3
+[logger] INFO  collection_complete  req=29 bin=smartbin1 truck=truck1
+[logger] INFO  bin_reset  req=29 bin=smartbin1
+[logger] INFO  request_closed  req=29 bin=smartbin1
+[logger] INFO  collection_done  req=30 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=30 bin=smartbin2 truck=truck2
+[logger] INFO  bin_reset  req=30 bin=smartbin2
+[logger] INFO  request_closed  req=30 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=40%
 [logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin1 level=60%
 [logger] INFO  level_update  bin=smartbin3 level=80%
-[logger] INFO  collection_done  req=38 bin=smartbin2 truck=truck2
-[logger] INFO  collection_complete  req=38 bin=smartbin2 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=80%
 [logger] INFO  level_update  bin=smartbin3 level=100%
 [logger] WARN  bin_full          bin=smartbin3
-[logger] INFO  level_update  bin=smartbin1 level=20%
-[logger] INFO  bin_reset  req=38 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin2 level=60%
 [logger] WARN  bin_full_received  bin=smartbin3
-[logger] INFO  pickup_dispatched  req=39 bin=smartbin3 truck=truck1
-[logger] INFO  request_closed  req=38 bin=smartbin2
-[logger] INFO  pickup_accepted  req=39 bin=smartbin3 truck=truck1
-[logger] INFO  job_accepted  req=39 bin=smartbin3 truck=truck1
+[logger] INFO  pickup_dispatched  req=31 bin=smartbin3 truck=truck3
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] INFO  pickup_accepted  req=31 bin=smartbin3 truck=truck3
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=32 bin=smartbin1 truck=truck2
+[logger] INFO  job_accepted  req=31 bin=smartbin3 truck=truck3
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  pickup_accepted  req=32 bin=smartbin1 truck=truck2
+[logger] INFO  job_accepted  req=32 bin=smartbin1 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=33 bin=smartbin2 truck=truck1
+[logger] INFO  pickup_accepted  req=33 bin=smartbin2 truck=truck1
+[logger] INFO  collection_done  req=31 bin=smartbin3 truck=truck3
+[logger] INFO  job_accepted  req=33 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=31 bin=smartbin3 truck=truck3
+[logger] INFO  collection_done  req=32 bin=smartbin1 truck=truck2
+[logger] INFO  bin_reset  req=31 bin=smartbin3
+[logger] INFO  collection_complete  req=32 bin=smartbin1 truck=truck2
+[logger] INFO  request_closed  req=31 bin=smartbin3
+[logger] INFO  bin_reset  req=32 bin=smartbin1
+[logger] INFO  request_closed  req=32 bin=smartbin1
+[logger] INFO  collection_done  req=33 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=33 bin=smartbin2 truck=truck1
+[logger] INFO  bin_reset  req=33 bin=smartbin2
+[logger] INFO  request_closed  req=33 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=40%
 [logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  level_update  bin=smartbin3 level=100%
+[logger] WARN  bin_full          bin=smartbin3
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=34 bin=smartbin3 truck=truck1
+[logger] INFO  pickup_accepted  req=34 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] INFO  job_accepted  req=34 bin=smartbin3 truck=truck1
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=35 bin=smartbin1 truck=truck3
+[logger] INFO  pickup_accepted  req=35 bin=smartbin1 truck=truck3
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  job_accepted  req=35 bin=smartbin1 truck=truck3
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  collection_done  req=34 bin=smartbin3 truck=truck1
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=36 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=34 bin=smartbin3 truck=truck1
+[logger] INFO  bin_reset  req=34 bin=smartbin3
+[logger] INFO  pickup_accepted  req=36 bin=smartbin2 truck=truck2
+[logger] INFO  collection_done  req=35 bin=smartbin1 truck=truck3
+[logger] INFO  request_closed  req=34 bin=smartbin3
+[logger] INFO  job_accepted  req=36 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=35 bin=smartbin1 truck=truck3
+[logger] INFO  bin_reset  req=35 bin=smartbin1
+[logger] INFO  request_closed  req=35 bin=smartbin1
+[logger] INFO  collection_done  req=36 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=36 bin=smartbin2 truck=truck2
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  bin_reset  req=36 bin=smartbin2
+[logger] INFO  request_closed  req=36 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=60%
 [logger] INFO  level_update  bin=smartbin1 level=60%
 [logger] INFO  level_update  bin=smartbin2 level=20%
-[logger] INFO  collection_done  req=39 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin3 level=80%
 [logger] INFO  level_update  bin=smartbin1 level=80%
-[logger] INFO  collection_complete  req=39 bin=smartbin3 truck=truck1
-[logger] INFO  bin_reset  req=39 bin=smartbin3
-[logger] INFO  request_closed  req=39 bin=smartbin3
 [logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=100%
+[logger] WARN  bin_full          bin=smartbin3
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=37 bin=smartbin3 truck=truck1
+[logger] INFO  pickup_accepted  req=37 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] INFO  job_accepted  req=37 bin=smartbin3 truck=truck1
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=38 bin=smartbin1 truck=truck3
+[logger] INFO  pickup_accepted  req=38 bin=smartbin1 truck=truck3
+[logger] INFO  job_accepted  req=38 bin=smartbin1 truck=truck3
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  collection_done  req=37 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  collection_complete  req=37 bin=smartbin3 truck=truck1
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=39 bin=smartbin2 truck=truck2
+[logger] INFO  pickup_accepted  req=39 bin=smartbin2 truck=truck2
+[logger] INFO  collection_done  req=38 bin=smartbin1 truck=truck3
+[logger] INFO  bin_reset  req=37 bin=smartbin3
+[logger] INFO  job_accepted  req=39 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=38 bin=smartbin1 truck=truck3
+[logger] INFO  request_closed  req=37 bin=smartbin3
+[logger] INFO  bin_reset  req=38 bin=smartbin1
+[logger] INFO  request_closed  req=38 bin=smartbin1
+[logger] INFO  collection_done  req=39 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=39 bin=smartbin2 truck=truck2
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  bin_reset  req=39 bin=smartbin2
+[logger] INFO  request_closed  req=39 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=100%
+[logger] WARN  bin_full          bin=smartbin3
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=40 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] INFO  pickup_accepted  req=40 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=41 bin=smartbin1 truck=truck3
+[logger] INFO  job_accepted  req=40 bin=smartbin3 truck=truck1
+[logger] INFO  pickup_accepted  req=41 bin=smartbin1 truck=truck3
+[logger] INFO  job_accepted  req=41 bin=smartbin1 truck=truck3
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  collection_done  req=40 bin=smartbin3 truck=truck1
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=42 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=40 bin=smartbin3 truck=truck1
+[logger] INFO  bin_reset  req=40 bin=smartbin3
+[logger] INFO  pickup_accepted  req=42 bin=smartbin2 truck=truck2
+[logger] INFO  request_closed  req=40 bin=smartbin3
+[logger] INFO  job_accepted  req=42 bin=smartbin2 truck=truck2
+[logger] INFO  collection_done  req=41 bin=smartbin1 truck=truck3
+[logger] INFO  collection_complete  req=41 bin=smartbin1 truck=truck3
+[logger] INFO  bin_reset  req=41 bin=smartbin1
+[logger] INFO  request_closed  req=41 bin=smartbin1
+[logger] INFO  collection_done  req=42 bin=smartbin2 truck=truck2
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  collection_complete  req=42 bin=smartbin2 truck=truck2
+[logger] INFO  bin_reset  req=42 bin=smartbin2
+[logger] INFO  request_closed  req=42 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin3 level=100%
+[logger] WARN  bin_full          bin=smartbin3
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=43 bin=smartbin3 truck=truck1
+[logger] INFO  pickup_accepted  req=43 bin=smartbin3 truck=truck1
+[logger] INFO  job_accepted  req=43 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin2 level=60%
 [logger] INFO  level_update  bin=smartbin1 level=100%
 [logger] WARN  bin_full          bin=smartbin1
 [logger] WARN  bin_full_received  bin=smartbin1
-[logger] INFO  pickup_dispatched  req=40 bin=smartbin1 truck=truck2
-[logger] INFO  pickup_accepted  req=40 bin=smartbin1 truck=truck2
+[logger] INFO  pickup_dispatched  req=44 bin=smartbin1 truck=truck2
+[logger] INFO  pickup_accepted  req=44 bin=smartbin1 truck=truck2
+[logger] INFO  job_accepted  req=44 bin=smartbin1 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  collection_done  req=43 bin=smartbin3 truck=truck1
+[logger] INFO  collection_complete  req=43 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  bin_reset  req=43 bin=smartbin3
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=45 bin=smartbin2 truck=truck1
+[logger] INFO  request_closed  req=43 bin=smartbin3
+[logger] INFO  pickup_accepted  req=45 bin=smartbin2 truck=truck1
+[logger] INFO  collection_done  req=44 bin=smartbin1 truck=truck2
+[logger] INFO  job_accepted  req=45 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=44 bin=smartbin1 truck=truck2
+[logger] INFO  bin_reset  req=44 bin=smartbin1
+[logger] INFO  request_closed  req=44 bin=smartbin1
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  collection_done  req=45 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=45 bin=smartbin2 truck=truck1
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  bin_reset  req=45 bin=smartbin2
+[logger] INFO  request_closed  req=45 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=100%
+[logger] WARN  bin_full          bin=smartbin3
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=46 bin=smartbin3 truck=truck2
+[logger] INFO  pickup_accepted  req=46 bin=smartbin3 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  job_accepted  req=46 bin=smartbin3 truck=truck2
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=47 bin=smartbin1 truck=truck3
 [logger] INFO  level_update  bin=smartbin2 level=60%
-[logger] INFO  job_accepted Terminated
+[logger] INFO  pickup_accepted  req=47 bin=smartbin1 truck=truck3
+[logger] INFO  job_accepted  req=47 bin=smartbin1 truck=truck3
+[logger] INFO  collection_done  req=46 bin=smartbin3 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  collection_complete  req=46 bin=smartbin3 truck=truck2
+[logger] INFO  bin_reset  req=46 bin=smartbin3
+[logger] INFO  request_closed  req=46 bin=smartbin3
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  collection_done  req=47 bin=smartbin1 truck=truck3
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=48 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=47 bin=smartbin1 truck=truck3
+[logger] INFO  pickup_accepted  req=48 bin=smartbin2 truck=truck2
+[logger] INFO  bin_reset  req=47 bin=smartbin1
+[logger] INFO  job_accepted  req=48 bin=smartbin2 truck=truck2
+[logger] INFO  request_closed  req=47 bin=smartbin1
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  collection_done  req=48 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=48 bin=smartbin2 truck=truck2
+[logger] INFO  bin_reset  req=48 bin=smartbin2
+[logger] INFO  request_closed  req=48 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  level_update  bin=smartbin3 level=100%
+[logger] WARN  bin_full          bin=smartbin3
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=49 bin=smartbin3 truck=truck1
+[logger] INFO  pickup_accepted  req=49 bin=smartbin3 truck=truck1
+[logger] INFO  job_accepted  req=49 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=50 bin=smartbin1 truck=truck2
+[logger] INFO  pickup_accepted  req=50 bin=smartbin1 truck=truck2
+[logger] INFO  job_accepted  req=50 bin=smartbin1 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  collection_done  req=49 bin=smartbin3 truck=truck1
+[logger] INFO  collection_complete  req=49 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  bin_reset  req=49 bin=smartbin3
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=51 bin=smartbin2 truck=truck1
+[logger] INFO  request_closed  req=49 bin=smartbin3
+[logger] INFO  collection_done  req=50 bin=smartbin1 truck=truck2
+[logger] INFO  pickup_accepted  req=51 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=50 bin=smartbin1 truck=truck2
+[logger] INFO  job_accepted  req=51 bin=smartbin2 truck=truck1
+[logger] INFO  bin_reset  req=50 bin=smartbin1
+[logger] INFO  request_closed  req=50 bin=smartbin1
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  collection_done  req=51 bin=smartbin2 truck=truck1
+[logger] INFO  collection_complete  req=51 bin=smartbin2 truck=truck1
+[logger] INFO  bin_reset  req=51 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  request_closed  req=51 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=100%
+[logger] WARN  bin_full          bin=smartbin3
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=52 bin=smartbin3 truck=truck1
+[logger] INFO  pickup_accepted  req=52 bin=smartbin3 truck=truck1
+[logger] INFO  job_accepted  req=52 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=53 bin=smartbin1 truck=truck3
+[logger] INFO  pickup_accepted  req=53 bin=smartbin1 truck=truck3
+[logger] INFO  job_accepted  req=53 bin=smartbin1 truck=truck3
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  collection_done  req=52 bin=smartbin3 truck=truck1
+[logger] INFO  collection_complete  req=52 bin=smartbin3 truck=truck1
+[logger] INFO  bin_reset  req=52 bin=smartbin3
+[logger] INFO  collection_done  req=53 bin=smartbin1 truck=truck3
+[logger] INFO  request_closed  req=52 bin=smartbin3
+[logger] INFO  collection_complete  req=53 bin=smartbin1 truck=truck3
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  bin_reset  req=53 bin=smartbin1
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=54 bin=smartbin2 truck=truck3
+[logger] INFO  request_closed  req=53 bin=smartbin1
+[logger] INFO  pickup_accepted  req=54 bin=smartbin2 truck=truck3
+[logger] INFO  job_accepted  req=54 bin=smartbin2 truck=truck3
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  collection_done  req=54 bin=smartbin2 truck=truck3
+[logger] INFO  collection_complete  req=54 bin=smartbin2 truck=truck3
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  bin_reset  req=54 bin=smartbin2
+[logger] INFO  request_closed  req=54 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=100%
+[logger] WARN  bin_full          bin=smartbin3
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=55 bin=smartbin3 truck=truck2
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=56 bin=smartbin1 truck=truck3
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] INFO  pickup_accepted  req=56 bin=smartbin1 truck=truck3
+[logger] INFO  pickup_accepted  req=55 bin=smartbin3 truck=truck2
+[logger] INFO  job_accepted  req=56 bin=smartbin1 truck=truck3
+[logger] INFO  job_accepted  req=55 bin=smartbin3 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  collection_done  req=56 bin=smartbin1 truck=truck3
+[logger] INFO  collection_done  req=55 bin=smartbin3 truck=truck2
+[logger] INFO  collection_complete  req=56 bin=smartbin1 truck=truck3
+[logger] INFO  collection_complete  req=55 bin=smartbin3 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  bin_reset  req=56 bin=smartbin1
+[logger] INFO  bin_reset  req=55 bin=smartbin3
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=57 bin=smartbin2 truck=truck1
+[logger] INFO  request_closed  req=56 bin=smartbin1
+[logger] INFO  pickup_accepted  req=57 bin=smartbin2 truck=truck1
+[logger] INFO  request_closed  req=55 bin=smartbin3
+[logger] INFO  job_accepted  req=57 bin=smartbin2 truck=truck1
+[logger] INFO  collection_done  req=57 bin=smartbin2 truck=truck1
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  collection_complete  req=57 bin=smartbin2 truck=truck1
+[logger] INFO  bin_reset  req=57 bin=smartbin2
+[logger] INFO  request_closed  req=57 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=100%
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin3
+[logger] WARN  bin_full          bin=smartbin1
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=58 bin=smartbin3 truck=truck1
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=59 bin=smartbin1 truck=truck3
+[logger] INFO  pickup_accepted  req=59 bin=smartbin1 truck=truck3
+[logger] INFO  pickup_accepted  req=58 bin=smartbin3 truck=truck1
+[logger] INFO  job_accepted  req=59 bin=smartbin1 truck=truck3
+[logger] INFO  job_accepted  req=58 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  collection_done  req=59 bin=smartbin1 truck=truck3
+[logger] INFO  collection_done  req=58 bin=smartbin3 truck=truck1
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  collection_complete  req=58 bin=smartbin3 truck=truck1
+[logger] INFO  collection_complete  req=59 bin=smartbin1 truck=truck3
+[logger] INFO  bin_reset  req=58 bin=smartbin3
+[logger] INFO  bin_reset  req=59 bin=smartbin1
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=60 bin=smartbin2 truck=truck3
+[logger] INFO  pickup_accepted  req=60 bin=smartbin2 truck=truck3
+[logger] INFO  request_closed  req=58 bin=smartbin3
+[logger] INFO  request_closed  req=59 bin=smartbin1
+[logger] INFO  job_accepted  req=60 bin=smartbin2 truck=truck3
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  collection_done  req=60 bin=smartbin2 truck=truck3
+[logger] INFO  collection_complete  req=60 bin=smartbin2 truck=truck3
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  bin_reset  req=60 bin=smartbin2
+[logger] INFO  request_closed  req=60 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  level_update  bin=smartbin3 level=100%
+[logger] WARN  bin_full          bin=smartbin3
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=61 bin=smartbin3 truck=truck3
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] INFO  pickup_accepted  req=61 bin=smartbin3 truck=truck3
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=62 bin=smartbin1 truck=truck1
+[logger] INFO  pickup_accepted  req=62 bin=smartbin1 truck=truck1
+[logger] INFO  job_accepted  req=61 bin=smartbin3 truck=truck3
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] INFO  job_accepted  req=62 bin=smartbin1 truck=truck1
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  collection_done  req=61 bin=smartbin3 truck=truck3
+[logger] INFO  collection_complete  req=61 bin=smartbin3 truck=truck3
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  bin_reset  req=61 bin=smartbin3
+[logger] INFO  collection_done  req=62 bin=smartbin1 truck=truck1
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=63 bin=smartbin2 truck=truck2
+[logger] INFO  request_closed  req=61 bin=smartbin3
+[logger] INFO  pickup_accepted  req=63 bin=smartbin2 truck=truck2
+[logger] INFO  collection_complete  req=62 bin=smartbin1 truck=truck1
+[logger] INFO  job_accepted  req=63 bin=smartbin2 truck=truck2
+[logger] INFO  bin_reset  req=62 bin=smartbin1
+[logger] INFO  request_closed  req=62 bin=smartbin1
+[logger] INFO  collection_done  req=63 bin=smartbin2 truck=truck2
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  collection_complete  req=63 bin=smartbin2 truck=truck2
+[logger] INFO  bin_reset  req=63 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  request_closed  req=63 bin=smartbin2
+[logger] INFO  level_update  bin=smartbin3 level=40%
+[logger] INFO  level_update  bin=smartbin1 level=40%
+[logger] INFO  level_update  bin=smartbin3 level=60%
+[logger] INFO  level_update  bin=smartbin1 level=60%
+[logger] INFO  level_update  bin=smartbin3 level=80%
+[logger] INFO  level_update  bin=smartbin2 level=20%
+[logger] INFO  level_update  bin=smartbin1 level=80%
+[logger] INFO  level_update  bin=smartbin3 level=100%
+[logger] WARN  bin_full          bin=smartbin3
+[logger] INFO  level_update  bin=smartbin2 level=40%
+[logger] WARN  bin_full_received  bin=smartbin3
+[logger] INFO  pickup_dispatched  req=64 bin=smartbin3 truck=truck3
+[logger] INFO  pickup_accepted  req=64 bin=smartbin3 truck=truck3
+[logger] INFO  job_accepted  req=64 bin=smartbin3 truck=truck3
+[logger] INFO  level_update  bin=smartbin1 level=100%
+[logger] WARN  bin_full          bin=smartbin1
+[logger] INFO  level_update  bin=smartbin2 level=60%
+[logger] WARN  bin_full_received  bin=smartbin1
+[logger] INFO  pickup_dispatched  req=65 bin=smartbin1 truck=truck2
+[logger] INFO  pickup_accepted  req=65 bin=smartbin1 truck=truck2
+[logger] INFO  job_accepted  req=65 bin=smartbin1 truck=truck2
+[logger] INFO  level_update  bin=smartbin2 level=80%
+[logger] INFO  collection_done  req=64 bin=smartbin3 truck=truck3
+[logger] INFO  collection_done  req=65 bin=smartbin1 truck=truck2
+[logger] INFO  collection_complete  req=64 bin=smartbin3 truck=truck3
+[logger] INFO  collection_complete  req=65 bin=smartbin1 truck=truck2
+[logger] INFO  bin_reset  req=65 bin=smartbin1
+[logger] INFO  level_update  bin=smartbin2 level=100%
+[logger] WARN  bin_full          bin=smartbin2
+[logger] INFO  bin_reset  req=64 bin=smartbin3
+[logger] INFO  request_closed  req=65 bin=smartbin1
+[logger] WARN  bin_full_received  bin=smartbin2
+[logger] INFO  pickup_dispatched  req=66 bin=smartbin2 truck=truck1
+[logger] INFO  request_closed  req=64 bin=smartbin3
+[logger] INFO  pickup_accepted  req=66 bin=smartbin2 truck=truck1
+[logger] INFO  job_accepted  req=66 bin=smartbin2 truck=truck1
+[logger] INFO  level_update  bin=smartbin1 level=20%
+[logger] INFO  level_update  bin=smartbin3 level=20%
+[logger] INFO  Terminated
