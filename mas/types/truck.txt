@@ -1,13 +1,13 @@
 % ============================================================================
 % TRUCK AGENT - SWMS
 % ============================================================================
-eventE([pickup_request,    % E - received from control_center
-        assignment,         % E - received from control_center
-        job_accept,         % E - not used at truck level
-        job_refuse,         % E - not used at truck level
-        assignment_ack,     % E - not used at truck level
-        collection_complete,% E - not used at truck level
-        reset_ack]).        % E - not used at truck level
+eventE([pickup_request,   
+        assignment,        
+        job_accept,        
+        job_refuse,         
+        assignment_ack,     
+        collection_complete,
+        reset_ack]).        
 
 :- dynamic truck_state/1, current_job/2, started/0, status_counter/1, assign_wait_counter/1,
            seen_assignment/1, completed_local/1, last_monitor_ts/1,
